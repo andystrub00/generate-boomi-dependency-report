@@ -1,0 +1,108 @@
+{
+    "name": "IAM Integrations",
+    "id": "Rjo2MTc3MTY2",
+    "subfolders": [
+        {
+            "name": "Job Code Manager",
+            "id": "Rjo2MTYzNDEz",
+            "subfolders": []
+        },
+        {
+            "name": "#Common",
+            "id": "Rjo2MTc3MjU5",
+            "subfolders": [
+                {
+                    "name": "WQL",
+                    "id": "Rjo2MTk4ODE2",
+                    "subfolders": []
+                },
+                {
+                    "name": "Get Workday Server Timestamp",
+                    "id": "Rjo2MTk4ODQ5",
+                    "subfolders": []
+                }
+            ]
+        },
+        {
+            "name": "User Account Manager",
+            "id": "Rjo2MjM0MjAx",
+            "subfolders": [
+                {
+                    "name": "#Common",
+                    "id": "Rjo2MjM0Mjgw",
+                    "subfolders": []
+                },
+                {
+                    "name": "zDEPRECATED - Pre-YL API Work",
+                    "id": "Rjo2OTQ1ODAz",
+                    "subfolders": [
+                        {
+                            "name": "New Hires",
+                            "id": "Rjo2MTgxNjMx",
+                            "subfolders": []
+                        },
+                        {
+                            "name": "Terminations",
+                            "id": "Rjo2MjY1OTI1",
+                            "subfolders": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Candidate Change to YL API",
+            "id": "Rjo2NjQ0NzYy",
+            "subfolders": [
+                {
+                    "name": "# Common",
+                    "id": "Rjo2NjgyNDUx",
+                    "subfolders": []
+                }
+            ]
+        },
+        {
+            "name": "Mission Unit and Territory Manager",
+            "id": "Rjo2ODgwNzk0",
+            "subfolders": [
+                {
+                    "name": "zDEPRECATED - Old Mission Unit and Responsible Party Work",
+                    "id": "Rjo2OTQ1ODAx",
+                    "subfolders": [
+                        {
+                            "name": "zDEPRECATED - Mission Unit Manager",
+                            "id": "Rjo2MTcxNjU3",
+                            "subfolders": []
+                        },
+                        {
+                            "name": "zDEPRECATED - Responsible Party Manager",
+                            "id": "Rjo2MjY1OTMw",
+                            "subfolders": []
+                        },
+                        {
+                            "name": "zDEPRECATED - Combined Mission Unit and Responsible Party Manager",
+                            "id": "Rjo2NDY1NTIy",
+                            "subfolders": [
+                                {
+                                    "name": "YL Global Salesforce Replication Tables Sync",
+                                    "id": "Rjo2ODQxNDI0",
+                                    "subfolders": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Workday Locations Data Quality",
+                    "id": "Rjo3MzkzOTM5",
+                    "subfolders": []
+                }
+            ]
+        },
+        {
+            "name": "Responsible Party Manager",
+            "id": "Rjo2OTQ1Nzg1",
+            "subfolders": []
+        }
+    ]
+}

@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boomi Component Dependency Diagram</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: #0078d4;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2 {
+            margin-top: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        #diagram {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .node {
+            cursor: move;
+        }
+        
+        .node rect {
+            stroke: #1d3557;
+            stroke-width: 2px;
+        }
+        
+        .isolated-node rect {
+            fill: #fcefef;
+            stroke: #e63946;
+        }
+        
+        .node text {
+            font-size: 12px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #999;
+            stroke-width: 1.5px;
+            marker-end: url(#arrowhead);
+        }
+        
+        .buttons {
+            margin-bottom: 15px;
+        }
+        
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #0078d4;
+            color: white;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #005a9e;
+        }
+        
+        .legend {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border: 1px solid #000;
+        }
+        
+        .import-export {
+            margin-top: 20px;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .file-input-label {
+            padding: 8px 15px;
+            border-radius: 4px;
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .file-input-label:hover {
+            background-color: #3e8e41;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .search-container {
+            margin-bottom: 15px;
+        }
+        
+        #searchInput {
+            padding: 8px;
+            width: 250px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .layout-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Boomi Component Dependency Report</h1>
+        </div>
+        
+        <div class="section">
+            <h2>Diagram</h2>
+            <div class="controls">
+                <div class="buttons">
+                    <button id="resetBtn">Reset View</button>
+                    <button id="toggleIsolatedBtn">Toggle Isolated Components</button>
+                </div>
+                <div class="layout-buttons">
+                    <button id="applyHierarchicalLayoutBtn">Hierarchical Layout</button>
+                    <button id="applyCircleLayoutBtn">Circle Layout</button>
+                    <button id="applyForceLayoutBtn">Auto Arrange</button>
+                </div>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search components...">
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #E9A2A2;"></div>
+                    <span>Isolated Component (No References)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #A5D6A7;"></div>
+                    <span>Process</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #90CAF9;"></div>
+                    <span>Connector</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FFCC80;"></div>
+                    <span>Connector Operation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #DD858E;"></div>
+                    <span>Profile</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #646165;"></div>
+                    <span>Mapping</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #81726A;"></div>
+                    <span>Cache</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #60695C;"></div>
+                    <span>Supplementals</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ffffff;"></div>
+                    <span>Regular Component</span>
+                </div>
+            </div>
+            <div id="diagram"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Isolated Components</h2>
+            <p>Components that neither reference nor are referenced by other components:</p>
+            <table id="isolatedTable">
+                <thead>
+                    <tr>
+                        <th>Component Name</th>
+                        <th>Type</th>
+                        <th>Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Isolated components will be listed here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section import-export">
+            <h2>Import/Export Data</h2>
+            <button id="importBtnTrigger">Import Component Data</button>
+            <input type="file" id="fileInput" accept=".json" style="display: none;">
+            <button id="exportDataBtn">Export Component Data</button>
+        </div>
+    </div>
+    
+    <div id="componentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Component Details</h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Sample data structure - replace this with your actual data from Boomi
+        let sampleData = {
+            components: [
+				{id: "12609865-eee2-48b8-b60d-e191ee7557a8", name: "Mission Unit-Responsible Party Canonical", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "12db9fd1-05a1-4594-abfc-521ef7dc3218", name: "[Canonical-> YLGlobal] Upsert MissionUnitStage", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "22d4621c-7238-4c9b-ac4e-be7479417ad5", name: "[Workday-> Canonical] Build Mission Unit Canonical", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "4f3e2ba7-5ea7-4a2d-ac27-ffe4e4b0b971", name: "[Mission Unit Manager] Convert active to YLGlobal Active", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "7184d72e-e6c3-4108-9ff8-e58a0e511233", name: "[WQL] SupOrg All Valid Fields", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "73d5e9db-b8a2-4454-ab4a-f5ec340b5a8d", name: "[MUM] Cost Center WQL Responses", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "78b51426-46bd-40ca-b225-92413f801b10", name: "[Mission Unit Manager] Get MUNum and MUAlpha", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "9cf65e9c-19e4-4e91-a948-ea4f24b6084f", name: "[DEPRECATED][YLGlobal] usp_MissionUnitHierarchyField EXECUTE", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "a4fadd67-7f38-4a71-aa2c-22b9bfa3e1f5", name: "MissionUnit & Responsible Party WQL Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "ac339ac0-267f-4780-8957-761c0ea34b9f", name: "[MU Manager] Build Mission Unit DisplayName, DeveloperName", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "afd5c390-5670-47e5-80e0-8fb55c912f73", name: "[Mission Unit Manager] Get YL Global, Salesforce Mission Unit Types", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "c6800425-6a8f-4c8d-9bc7-4a3a9d203e8f", name: "Mission Unit Manager Canonical", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "c8633beb-0dc5-4889-962e-bab51588eb35", name: "[Mission Unit Manager] Salesforce Closed__c Logic", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "c97eddfc-ac57-449c-91a6-99378335e269", name: "[DEPRECATED]Mission Unit Manager Process Properties", type: "processproperty", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", name: "[DEP] Mission Unit Manager", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "f1f65e96-6ba4-4df9-9988-ccd9d0c530ac", name: "[Mission Unit Manager] Convert Workday Country Name to YLGlobal Country Name", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "f3e994f1-f485-4f8c-9aa4-04f943e117e1", name: "[Canonical-> YLGlobal] Upsert Responsible Parties", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Mission Unit Manager"},
+{id: "05467905-8cbb-4739-9fe2-98afce436b9f", name: "SF_User_QUERY_Response", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "0bf9cac2-0f33-40d1-98f7-1e86983ca9db", name: "Database V2 dtproperties (TABLE)  UPSERT Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "11f5becc-9e94-454c-9c69-1c5e8845bb16", name: "[WQL] Cost Centre JSON", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "142807e8-ac34-4bc8-b7bb-ffa29588f409", name: "Canonical > ResponsibleParties", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "169ae022-1dbb-4ebd-a481-a57aeb05abdb", name: "Canonical > MissionUnit", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "1940e385-2a7c-4170-9289-687d3e9687e8", name: "SupervisoryOrganizations Cache", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "1de0e957-63aa-47b9-b4b6-65903dbb6aeb", name: "Responsible Party Manager Process Properties", type: "processproperty", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "276acb2b-0965-451d-a7d8-c3cd1ee5827e", name: "New Map", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "305ce848-4dac-48f7-aaec-6df323abb216", name: "New Database Connector Operation", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "31ccc069-4c47-4426-8c03-c9f3e44d01ca", name: "Database V2 tblUser (TABLE) GET Request 3", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "336f4268-2868-4e9d-949b-eba15b120814", name: "[WQL] supervisoryOrganizations JSON", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "35e6ba58-afc4-4ea1-9376-9434c36fe9aa", name: "Database V2 tblUser (TABLE) GET Response 3", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "400e872e-3555-4778-9288-6c2cbad7a5ec", name: "Canonical > ResponsibleParty__c", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "5bf2b41d-531f-4b8d-9b1f-856d67d22179", name: "Database V2 tblUser (TABLE) GET Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "68709a4c-30f5-4b71-8e38-4e67118ea019", name: "Cost Centre Cache", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "6b99b98f-73fd-4b5a-82f5-6f311776e0a7", name: "RPM Cache", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "6d721562-fb97-4577-aa74-7e04bb27d1c3", name: "[Workday-> Canonical] Map WQL Response to ResponsibleParty Canonical", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "70a116b8-c055-4440-9c3c-8610a134dc5a", name: "Database V2 dtproperties (TABLE)  UPSERT Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "70b5e05d-5698-45be-8765-f8cc93434fec", name: "SF_User_QUERY_Response 2", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "7335fc87-15b4-4060-bf04-d71ab7254307", name: "[RPM] Responsible Party Manager Canonical", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "75660b6c-12b1-46a9-a199-215bcd6f7b7e", name: "Database V2 tblUser (TABLE) GET Request 2", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "7cc4faf6-dac4-4343-b5f7-d649b11ae39d", name: "tblUser", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "893c689e-afd7-4368-8ba3-91c1041c1b38", name: "[Salesforce] Responsible_Parties__c DELETE", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "8ad5a2c6-0ed8-4280-9956-ac733e6e00f4", name: "All Workers Cache", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "96b0abf3-4966-4c74-9042-7b523d8b84d4", name: "Database V2 tblUser (TABLE) GET Response 2", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "9908545d-5496-4847-a210-1bcdaa3151b3", name: "New Map Function 2", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "a4597cf2-fffe-48c9-9057-00c91e25ed25", name: "[WQL] CostCenter Query Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "b09d432c-07b3-4934-8e4c-20f0b3bd6c5f", name: "New Database Profile", type: "profile.db", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "b98aa0ee-392e-44b4-9db7-bf3f27295577", name: "New Map 2", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "c0ba9cd8-5a15-44ae-9e39-a870b95478e4", name: "SF_MissionUnit__c_QUERY_Response", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "c55278c5-7d25-4c18-8bc8-1167b14c2560", name: "SF_Responsible_Parties__c_QUERY_Response", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "e2e89f6e-b519-4535-96da-cfb208dcee7c", name: "[Salesforce] Responsible_Parties__c CREATE", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "eb644d42-5b79-4d56-ae3d-baf3479bf870", name: "[WQL] All Workers Json", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "f237f35c-b900-4dcb-b51d-021c738444a2", name: "[CC] Get Canonical Fields", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "f3c7f327-8fcf-49f0-a86b-5c9bbf3771ad", name: "Database V2 tblUser (TABLE) GET Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", name: "[DEP] Responsible Party Manager", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Responsible Party Manager"},
+{id: "012fc765-697f-4abd-9c8a-cc12a550f99e", name: "[DEPRECATED][Mission Unit Manager] Build SupeOrg Location Canonical", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "01e4c437-3296-4a93-ad98-0ac1e21d8690", name: "[Mission Unit Manager] Count Unique Subtypes Per MU Code", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "06eef302-61f5-43d7-b8c3-3c689cd21936", name: "Database V2 MissionUnitStage (TABLE) UPSERT Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "0a636a93-3df5-4045-8c36-8ce5f1ecc93f", name: "[YLGlobal] MissionUnitStage CREATE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "0f3d69b0-50b0-43c3-84a8-50431acba12b", name: "[Mission Unit Manager] All SupeOrg Full Canonicals", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "133fdedb-2b74-4a4e-a271-480b1656ae69", name: "[DEPRECATED] [sub] Get SupeOrg Location Data from Workday, Existing YLGlobal and Salesforce Records", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "19dab8b0-295f-499d-a2a6-779c31a79639", name: "[YLGlobal] MissionUnit UPDATE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "1d13e572-ac34-4a63-828e-50bc5b569e00", name: "[YLGlobal] usp_SalesforceRPsToInsert Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "1db47101-deea-4698-a7cc-c3dd7aeb1122", name: "[YLGlobal] v_RPsToDelete (VIEW) GET Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "223bf915-6c3f-4215-bc4b-50603113765f", name: "[Mission Unit Stage] Build Single Child Stage Record", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "28922fb5-b2e7-4c2c-88a2-476c700260a8", name: "[Common] Get Current Datetime MST", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "2931e1f5-b2b4-4fbc-9958-c9ebadbe19c2", name: "[YLGlobal] MissionUnitStage UPDATE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "29574ad5-1be4-41da-b902-2b64886929d3", name: "[Territory Sync] Build Territory Description", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "2a379185-cc0c-451b-b940-7e11d585dd6d", name: "[YLGlobal] Responsible_Parties__c (TABLE) DELETE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "369a93b4-6d14-4e5b-a5ab-ecac3807bdab", name: "[Mission Unit Manager] Check for MissionUnit Codes without a Master SupeOrg Type", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "3c49f33a-b23c-44a3-b9ee-d7184bd1ccc6", name: "[YLGlobal] v_RPsToDelete (VIEW) GET Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "45be50a2-bfa9-483b-85d7-7e87d5d23a4a", name: "[SET BY EXTENSIONS] [Mission Unit Manager] Workday MU Types to Sync to MU and Territory Tables", type: "crossref", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "46b31f47-fe28-47a8-8e50-1e36e5af2e2c", name: "[Mission Unit Manager] SupeOrg Locations WQL Response to Locations Canonical", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "492ee154-5ac1-495a-a654-df0e1868b16b", name: "[MU Stage] WQL Response to YLGlobal Create or Update", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "4ac57f5b-8f2c-4576-955a-07e5c5bcf9af", name: "[MU Manager] Parse SupeOrg Subtypes", type: "script.processing", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", name: "[sub] Send Mission Unit Closed in Salesforce but Active in WD Notification", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "4decaf07-6301-4f40-bfbf-39c9b0c76dd3", name: "[YLGlobal] tblUser GET Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "4eabf477-940f-454e-8143-da9bfaef70c3", name: "[DEPRECATED][YLGlobal] Responsible_Parties__c (TABLE) DELETE Request", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "522b5781-1bec-432b-88fc-abe9ebda7a65", name: "[YLGlobal] MissionUnitStage CREATE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "55660029-8202-4cfa-a4c0-9a2f512721a4", name: "[Mission Unit Stage] Compare Existing and New MU Stage Records", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "5c85ac2c-3e00-4b9a-a4ea-c5c2618ae5fc", name: "[MU Stage] WQL Parent Supe Orgs", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "662f3c2e-a161-413e-9218-8310474250a6", name: "[MU Manger] Count Unique Subtypes per Mission Unit Code", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "67a0add5-7e77-4707-abbe-d99f8297e417", name: "[Mission Unit Manager] Count Records with Same Code Responses", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", name: "[DEP] [Main] Mission Unit Manager", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "771b0939-8915-448f-b4fd-dd1ddb24afc0", name: "[YLGlobal] MissionUnit INSERT Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "7e87012e-1582-490f-bfd5-da6af5bcdfb8", name: "[Mission Unit Manager] YLGlobal MissionUnitType", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "81584857-5b8d-4011-bb3f-8caee15ab4a7", name: "[Dep][Salesforce] Territory2 UPSERT Request", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "850dea74-d4f9-4ec3-8f3c-f08d8827c065", name: "[YLGlobal] MissionUnit UPDATE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", name: "[sub] Find MissionUnit Codes without a record with Master Subtype", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "8ad3cb2e-f125-4c79-a540-65dc601e9e12", name: "[YLGlobal] usp_SalesforceRPsToDelete Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "8c105fcc-d5c5-409d-96ce-5fca1efc69c7", name: "Workday Get_Locations EXECUTE Response", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "8c26a097-ba84-42a8-9fe5-f23d81833a1d", name: "[Mission Unit Manager] Duplicate Master Type SupeOrgs", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", name: "[sub] Mission Unit Stage Sync", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "8fadbaaa-2d3d-48a6-872d-95eb5e197b67", name: "[YLGlobal] MissionUnitStage CREATE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "90d8c97d-cbde-4f14-8e2f-2fd1324fde71", name: "[YLGlobal] tblUser GET Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "91a4dda7-227b-4e3b-be1a-7b6e687b01e8", name: "[YLGlobal] usp_BuildMissionUnitHierarchyField EXECUTE", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "94db29b1-2f4a-457f-a699-a0aae9cd0e3b", name: "[Mission Unit Stage] Potentially Updated MU Stage Records", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", name: "[sub] Find Multiple SupeOrgs with Master Subtype and Same MU Code", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "9ee177bf-10ec-40b3-b189-a5c1785d6a7d", name: "[Mission Unit Manager] Salesforce Existing Mission Unit Records", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "a6f9b188-143d-4da6-846e-fd654bd22b61", name: "[Workday-> Canonical] Build MissionUnit Stage Canonical", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "ae34e3db-b52b-4790-9b36-9e0d850c0b31", name: "[Mission Unit Manager] Check for Multiple Master SupeOrgs with Same Code", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "af9aa22c-cdff-4d45-a61a-c1708f84c5fc", name: "[YLGlobal] v_RPsToInsert (VIEW) GET Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "afcbed31-bfaa-4100-bcb4-690e19e7a606", name: "Database V2 MissionUnitStage (TABLE) UPSERT Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "b1490fe3-d4ac-4900-8b87-b0f9ac0fb8dd", name: "[Mission Unit Manager] Supe Orgs for MU and Territory Tables", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "b35143de-d151-4222-ae9e-88bd06b42e79", name: "[sub] Get MU Lookup Tables from YLGlobal and Salesforce", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "b724a3d8-e8e9-4033-aed9-b6776c628cad", name: "[MU Stage] Workday WQL to Create Request", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "bab883a4-fb94-40e0-b063-38fc3aa2058b", name: "[Workday] Build Get_Locations Execute Request", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "bae5773f-f743-40a7-a597-e5fb30322cf2", name: "[YLGlobal] tblUser Records", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "c111cb16-1d94-4144-aa1d-accd717fe011", name: "[YLGlobal] MissionUnitStage UPDATE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "c4298a0b-229f-4b81-a1be-441e4adecbd7", name: "[TEMP] Mission Unit Stage WQL Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "c5225678-5bde-436b-9e44-61e53018ff7f", name: "[MU Stage] Current YLGlobal Records", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "c7a7d215-b513-462d-ae97-f7d27cedb7d8", name: "[YLGlobal] Responsible_Parties__c (TABLE) DELETE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "cf061359-1b78-42f2-b8a1-9a1d1e3a940c", name: "[MU Stage] All Updated SupeOrgs and Subordinates", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "cf75b18d-ad58-4b56-9603-921fe1c7777d", name: "[MU Stage] Compare Mission Unit Stage Data", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "d089338b-6f14-4128-af4b-c76d6d797e9d", name: "[MU Stage] NEW Compare Workday and YLGlobal MissionUnit Stage ", type: "transform.function", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "d3bf1b62-8d8d-4206-af1e-2a158125622f", name: "[MU Manager] Mission Unit Full Canonical", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "d5323351-ea2b-4fba-a08e-86d97b247aac", name: "[YLGlobal] [UPDATED] MissionUnitStage QUERY", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "d72ee8a9-2dd4-44f5-9ef3-18cbc6d1b75f", name: "[Workday] Get_Locations EXECUTE", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "de235b26-d92e-43be-89bb-0e8273f5594e", name: "Mission Unit Stage Canonical", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "e133a78e-319c-40b0-8c0f-d23c67935e16", name: "[Workday] SupeOrg Locations WQL Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "f214f594-605f-416a-91ee-b259f29f8985", name: "[YLGlobal] MissionUnitStage CREATE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "f4632f5c-02a3-4459-a42f-2ff5bac9f043", name: "[YLGlobal] Get tbl.User Record from User Workday ID", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "f7e3a7a1-62de-4b34-ab69-722f8778ccae", name: "Workday Get_Locations EXECUTE Request", type: "profile.xml", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "fba02f74-c7e6-471f-b095-08e6bcf2f10a", name: "[YLGlobal] MissionUnitStage QUERY", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "ff80278a-f524-4d34-9ec3-178532f5ab2a", name: "[Responsible Party] tbl.User Records", type: "documentcache", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "fffe885d-23c5-41fd-8105-7dc51f45033a", name: "[Mission Unit Stage] Build All Parent Stage Records", type: "transform.map", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager"},
+{id: "05942e30-2e5c-4a2b-8c3f-a3c874bcc3cc", name: "[Salesforce] User QUERY by SystemModstamp", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "1c534584-163b-4b67-a9b9-51fa7012f549", name: "[YLGlobal] Salesforce.Responsible_Parties__c UPSERT", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "1d631e11-3b66-438e-972d-c754a583084c", name: "[YLGlobal] Salesforce.MissionUnit__c UPSERT", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "1ee9b9f1-795a-46eb-b1d5-a05cb22d5a84", name: "[YLGlobal] Salesforce.Responsible_Parties__c INSERT", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "2b185a77-5814-46b0-bc2a-5ab06329325a", name: "Database V2 MissionUnit__c (TABLE)  CREATE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "3034a1a5-3719-4277-8251-30e3d43a04fc", name: "[YLGlobal] SFUser (TABLE) DELETE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "49312069-93b4-4a86-abd1-4b42d8de7ccc", name: "Database V2 MissionUnit__c (TABLE)  CREATE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "51dcbb53-ffbe-41ac-a70a-d8f5d3808afe", name: "[DEPRECATED][YLGlobal] Salesforce.SFUser UPSERT Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "537a077e-e253-4831-b836-d0a8a87e7d77", name: "[YLGlobal] MissionUnit__c (TABLE) DELETE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "63afbf9e-3ff5-473c-b4df-8b1e16177696", name: "[YLGlobal] Salesforce.SFUser INSERT", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "6664ceb1-33b9-4022-980c-3f0d46027966", name: "[YLGlobal] Salesforce.SFUser UPSERT Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "6b214273-75b7-418c-bfae-26d222b7d8c7", name: "[YLGlobal] SFUser (TABLE) DELETE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "6d6259e2-74d4-4510-948f-71575f8dcc31", name: "[sub] Sync YL Global Salesforce.SFUser Replication Table", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "75423f90-94eb-4981-ab4f-f1b05614ddd9", name: "Database V2 SFUser (TABLE) CREATE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "8d4cd5cc-25db-4e95-8bf5-38a517667b4e", name: "[YLGlobal] Salesforce.SFUser DELETE", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "96861987-3e7b-4f8f-9816-1fa299d533f6", name: "[sub] Sync YL Global Salesforce.Responsible_Parties__c Replication Table", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "9df26fdd-34f7-4198-baf5-b699eaae64f5", name: "[YLGlobal] Salesforce.MissionUnit__c DELETE", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "aad921c7-daaf-44ce-89eb-8820332ae231", name: "[YLGlobal] Salesforce.SFUser UPSERT", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "b36fda30-badf-4a7b-860d-6ed34c32988c", name: "[sub] Sync YL Global Salesforce.MissionUnit__c Replication Table", type: "process", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "c0f3379d-fcee-4381-b75e-54ee0e5d7022", name: "[YLGlobal] Salesforce.MissionUnit__c INSERT", type: "connector-action", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "c2621aaf-5023-4116-87ad-87271f951024", name: "Database V2 Responsible_Parties__c (TABLE) CREATE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "c42d861a-33ed-436a-97fe-5ca0e2cc0547", name: "Database V2 SFUser (TABLE) CREATE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "cb01fcdd-3231-4ee8-b9a5-3c02f8b6769f", name: "[YLGlobal] Salesforce.Responsible_Parties__c UPSERT Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "d0afd2c7-8eca-4631-a444-bf81550e50d6", name: "[YLGlobal] Salesforce.MissionUnit__c UPSERT Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "e07110bd-ad23-4c94-889d-9de6b9c823d5", name: "[YLGlobal] MissionUnit__c (TABLE) DELETE Request", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "fdd9bcff-5ff4-4381-b6e9-651c73527208", name: "Database V2 Responsible_Parties__c (TABLE) CREATE Response", type: "profile.json", path: "YL/IAM Integrations/Mission Unit and Territory Manager/zDEPRECATED - Old Mission Unit and Responsible Party Work/zDEPRECATED - Combined Mission Unit and Responsible Party Manager/YL Global Salesforce Replication Tables Sync"},
+{id: "162c4dfd-d465-4431-a4a0-7a74d2d6e5ce", name: "[Main] Workday to YLGlobal Mission Unit Stage Table", type: "process", path: "null"},
+{id: "2e162d7c-c7c9-487a-bfb9-650ebb373ce9", name: "Test[MU Canonical to Territory2]", type: "transform.map", path: "null"},
+{id: "b6cc21c0-9b61-415d-bfdb-c8f842cb8c35", name: "Test [MU Canonical to Territory2_T]", type: "transform.map", path: "null"},
+{id: "c72147dd-916a-4f02-9161-c5669607c06f", name: "[MU Manager] Build Salesforce MissionUnit__c UPSERT Request", type: "transform.map", path: "null"},
+{id: "e3f46149-daef-44d8-82fb-527e8ebdc4ec", name: "[MU Manager] Build YLGlobal dbo.MissionUnit UPSERT Request", type: "transform.map", path: "null"},
+{id: "f4d4663e-1609-4860-8263-68e65e1f3b73", name: "Test [ Canonical > Territory2_T ]", type: "transform.map", path: "null"},
+{id: "6c4706b7-07bc-4e64-b2f6-0287165eaf97", name: "[YLGlobal] MissionUnitStage UPSERT Request", type: "profile.json", path: "null"},
+{id: "05513bb8-5f58-47ca-b87d-7f37549a5217", name: "Test-Territory Sync", type: "process", path: "null"},
+{id: "687a90ef-f214-43ae-a538-6f4aefb3e6b3", name: "[Common] Boolean to Opposite Boolean", type: "transform.function", path: "null"},
+{id: "bc94333c-e456-4635-8204-cb70c40e9920", name: "[MU Manager] Full WD SupeOrg Response", type: "profile.json", path: "null"},
+{id: "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3", name: "[TEMP] Mission Unit Manager Filtering Test", type: "process", path: "null"},
+{id: "599f77c9-9fde-4513-af10-c0776847e5cc", name: "[MU Manager] Build YLGlobal dbo.MissionUnit INSERT Request", type: "transform.map", path: "null"},
+{id: "ccf3fe31-75e1-420f-a769-80040d9a52f7", name: "[Deployable] Clean Data Query", type: "process", path: "null"},
+{id: "1eeaaebf-b0bc-4411-9aa9-554071e4b218", name: "[Mission Unit Manager] Salesforce Territory2Type", type: "documentcache", path: "null"},
+{id: "05ea3f2e-beaa-489a-ba79-2a9a9329dada", name: "[Salesforce] MissionUnit__c UPSERT", type: "connector-action", path: "null"},
+{id: "063252ab-19f6-4a32-82fe-8a77075fa069", name: "[YLGlobal] MissionUnitStage UPSERT", type: "connector-action", path: "null"},
+{id: "0ed9a92c-b810-4843-9da4-b61d10f63d6d", name: "Error Message Cache", type: "documentcache", path: "null"},
+{id: "15115b4a-b72b-47fa-a124-cd0de54bee92", name: "Job Code Manager Process Properties", type: "processproperty", path: "null"},
+{id: "23f3fbbf-710c-465c-ab53-ebae58f7d4e8", name: "andystrubhar sandbox - Do Not Deploy", type: "connector-settings", path: "null"},
+{id: "4cba6cb4-0ace-45a5-a993-27629cf83072", name: "[sub] POST WQL Query to Workday", type: "process", path: "null"},
+{id: "5973d8c0-3790-43cf-bc18-b2811c0dc94c", name: "[DEPRECATED] [WebSQL01] YLGlobal - SET BY EXTENSIONS", type: "connector-settings", path: "null"},
+{id: "3874594a-fc8f-4b47-9987-7c807253fab6", name: "[Salesforce] Responsible Parties__c UPSERT", type: "connector-action", path: "null"},
+{id: "3a7d1068-689d-4262-978b-0a9e9e625abd", name: "Default Error Handling Proccess Route", type: "processroute", path: "null"},
+{id: "3cb61e70-c713-4466-8141-a46f6437f6e8", name: "[sub] Get Workday Server Timestamp", type: "process", path: "null"},
+{id: "ebcba8b7-8838-40cb-8721-817795e72a7c", name: "[YLGlobal] ResponsibleParties UPSERT Request", type: "profile.json", path: "null"},
+{id: "01c4be5c-8386-46dc-9fe2-9894417d9242", name: "Babu-[CC] Get Canonical Fields", type: "transform.function", path: "null"},
+{id: "c4c7681b-02a6-4907-aa04-48796291e9c8", name: "Test-[Main] Responsible Party Manager", type: "process", path: "null"},
+{id: "eb5ae59d-5178-455b-9b1b-eb9eb9b0dd7f", name: "[YLGlobal] MissionUnit UPSERT Request", type: "profile.json", path: "null"},
+{id: "6841ff34-fbfb-493f-8799-a2ec4fbe2594", name: "[YLGlobal] MissionUnit UPSERT", type: "connector-action", path: "null"},
+{id: "92a5ee6a-640a-4136-870d-e82a20f15cd9", name: "[YLGlobal] ResponsibleParties UPSERT", type: "connector-action", path: "null"},
+{id: "b534ada2-ec21-4e77-8b91-147827846443", name: "Build Error Information JSON", type: "transform.map", path: "null"},
+{id: "202ee26c-7927-4267-b175-d461d3ff9ead", name: "YLGlobal tblCountry", type: "crossref", path: "null"},
+{id: "ac9d1440-91d3-4cb2-b4a5-f41fafcdc2c9", name: "Workday Countries", type: "crossref", path: "null"},
+{id: "0537867e-fccc-400d-83f2-75a144d07444", name: "Test- [Workday-> Canonical] Map WQL Response to ResponsibleParty Canonical", type: "transform.map", path: "null"},
+{id: "f6e31445-ff6d-4499-afb0-6e0411bbf930", name: "[TEMP] YLGlobal On-Prem Connection Testing", type: "process", path: "null"},
+{id: "58516175-78ff-4c54-bef7-0a4db8676b55", name: "Get Company Number from Workday Company Name", type: "transform.function", path: "null"},
+{id: "5728996a-9fd4-485c-88b8-96329d2b6c72", name: "ResponsiblePartySync", type: "process", path: "null"},
+{id: "02de5970-60bd-4e55-87a4-9b9bda937d3c", name: "[Salesforce] Responsible_Parties__c DELETE Request", type: "profile.xml", path: "null"},
+{id: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", name: "[Main] Sync YLGlobal Salesforce.Responsible_Parties__c Replication Table", type: "process", path: "null"},
+{id: "c623e734-6386-46e4-bffd-fe53f2fd7699", name: "[Salesforce] SOQL Query", type: "process", path: "null"},
+{id: "3b1edffd-ecbb-44c6-a634-959cbc579e09", name: "[Salesforce] Responsible_Parties__c UPSERT Request", type: "profile.xml", path: "null"},
+{id: "3c4c5231-b111-474a-aec9-6177ce6d60e4", name: "[Main] Responsible Party Manager", type: "process", path: "null"},
+{id: "68959c06-92fa-44c7-8c47-5db942c9615b", name: "[Salesforce] Responsible_Parties__c CREATE Request", type: "profile.xml", path: "null"},
+{id: "1006a866-9950-4113-a31e-cbc98869b555", name: "Send Email (Plain Text Body, No Attachment)", type: "connector-action", path: "null"},
+{id: "1d1770a5-0f79-4d5c-8e68-d668443b639b", name: "[WQL] CostCenter QUERY Response", type: "profile.json", path: "null"},
+{id: "8eb4aeb6-fe5b-4823-b142-7d6fa57fd1d2", name: "Error Information Flat File", type: "profile.flatfile", path: "null"},
+{id: "f2d5c9d1-7095-449e-860f-0fe3437b2a82", name: "[SmartHost] smtp.younglife.org", type: "connector-settings", path: "null"},
+{id: "acf211c7-49a2-42ee-bc08-7bf812c2993d", name: "[Mission Unit Manager] SupeOrg Location Canonical", type: "profile.json", path: "null"},
+{id: "08067b65-bc76-4c61-bd2d-1f86adee8c6d", name: "[Salesforce] integrationuser - SET BY EXTENSIONS", type: "connector-settings", path: "null"},
+{id: "25904990-a997-471c-8f26-fcb04b8d18b5", name: "[Mission Unit Manager] Existing Salesforce Parent Mission Units", type: "documentcache", path: "null"},
+{id: "3b3dd044-4725-46be-9ebc-311bd8a9e409", name: "[sub] Get SupeOrg Locations from Workday", type: "process", path: "null"},
+{id: "2a3b239f-c933-4235-9a9d-935372856fa4", name: "[YLGlobal] MissionUnit QUERY Request", type: "profile.json", path: "null"},
+{id: "66675a6a-c98a-4c22-b626-ed76803a0104", name: "Mission Unit Process Properties", type: "processproperty", path: "null"},
+{id: "790a6999-a5c3-4b85-990c-c6cb69488fdf", name: "[YLGlobal] Mission Unit QUERY By MUCode", type: "connector-action", path: "null"},
+{id: "7dfbe045-b021-4912-b1bf-7be8dd477e13", name: "[AWS RDS] YLGlobal integrationuser - SET BY EXTENSIONS", type: "connector-settings", path: "null"},
+{id: "e4dd4cb9-290a-4d9d-9531-6c201be0fd99", name: "[Salesforce] MissionUnit__c QUERY By MU Code", type: "connector-action", path: "null"},
+{id: "fd9e0a87-4efd-462a-80a9-55cecfaa86b7", name: "[Mission Unit Manager] Existing YLGlobal Mission Unit Records", type: "documentcache", path: "null"},
+{id: "00732454-a653-474a-a23e-5ae58c9cbb21", name: "[Responsible Party Sync] Build SF ResponsibleParty CREATE Request", type: "transform.map", path: "null"},
+{id: "794171d1-ff22-4f08-8461-766b5dd5a4c0", name: "[Responsible Party Sync] Build SF Responsible Party DELETE Request", type: "transform.map", path: "null"},
+{id: "35951e23-297a-4ab7-ad7e-35cb2bd8f37b", name: "[Mission Unit Manager] SupeOrg Location Canonicals", type: "documentcache", path: "null"},
+{id: "a69c170d-8fba-4cd2-9283-be1abc1f0356", name: "[YLGlobal] Salesforce.v_RPsToDelete QUERY", type: "connector-action", path: "null"},
+{id: "248061c2-a988-43d4-9ad1-d498b58698c4", name: "[Canonical -> Salesforce] Create Normal Territory2 UPSERT Request", type: "transform.map", path: "null"},
+{id: "9a47eb8f-fbf0-42fa-a883-2bb991118ba1", name: "[Canonical -> Salesforce] Create "_T" Territory2 UPSERT Request", type: "transform.map", path: "null"},
+{id: "c32c0dd7-c18c-4f79-86a3-20981be1ec44", name: "[YLGlobal] Salesforce.Responsible_Parties__c DELETE Request", type: "connector-action", path: "null"},
+{id: "878289ce-89b4-4920-a162-cba3a236825e", name: "[IMAP Mail] Send Email with Attachment from IMAP Attachments Cache", type: "connector-action", path: "null"},
+{id: "8c6706b7-2e73-4f04-b4c4-4c2c403191ab", name: "[AWS SES] Outbound Mail Connection", type: "connector-settings", path: "null"},
+{id: "e76c1588-1470-4bc4-a913-0a6f6028ce32", name: "[Common] IMAP Attachments", type: "documentcache", path: "null"},
+{id: "b19d5c99-d713-4155-a345-14fa0c7d6a41", name: "[sub] Sync YL Global Salesforce Replication Tables", type: "process", path: "null"},
+{id: "21e25ada-6344-4fc8-abfe-49113af1654a", name: "[IMAP Mail] Send Email without Attachment", type: "connector-action", path: "null"},
+{id: "57f231c0-ae9f-4209-84ce-2c468e19e909", name: "[sub] Territory Sync", type: "process", path: "null"},
+{id: "7bacef67-8180-4fd0-ae63-382050b779ca", name: "[sub] Send MissionUnit Records to MissionUnit Tables in YLGlobal and Salesforce", type: "process", path: "null"},
+{id: "d986e440-deea-4f30-88d1-20784af99ac4", name: "[Mission Unit Manager] Workday SupeOrg WQL Responses", type: "documentcache", path: "null"},
+{id: "fd58fad6-857e-4c8e-a3d1-0d2a0a061536", name: "[sub] Get SupeOrgs From Workday Transaction Log", type: "process", path: "null"},
+{id: "4fc0b8bb-1910-44c6-99e7-5647db22fda1", name: "[YLGlobal] MissionUnit INSERT", type: "connector-action", path: "null"},
+{id: "5189338e-c3f2-4685-a48d-f30dd33251ad", name: "[Canonical -> Salesforce] Link Parent Territory2 Record to Child", type: "transform.map", path: "null"},
+{id: "1126be9c-626d-4db4-88d0-ac5dc1f1796b", name: "[YLGlobal] MissionUnitStage GET Response", type: "profile.json", path: "null"},
+{id: "9e614e6b-cb13-46ab-8b96-9d4992499e0c", name: "[YLGlobal] MissionUnitStage GET Request", type: "profile.json", path: "null"},
+{id: "3f541e81-9c24-40bc-b900-83c83815c15c", name: "[YLGlobal] MissionUnitType QUERY Response", type: "profile.json", path: "null"},
+{id: "7e700930-1e6b-4069-8fd9-15aa5e3c1f1c", name: "[Mission Unit Manager] Build Mission Unit Canonical", type: "transform.map", path: "null"},
+{id: "496c839c-887e-46a3-aedb-0f6f60950bad", name: "[Salesforce] MissionUnit__c QUERY Response", type: "profile.xml", path: "null"},
+{id: "95cfb051-f6d0-48a0-811c-efe4017fa7e0", name: "[YLGlobal] MissionUnitType QUERY", type: "connector-action", path: "null"},
+{id: "bd00318c-973f-4cce-a061-e4609e21026a", name: "[Salesforce] Territory2Type QUERY Response", type: "profile.xml", path: "null"},
+{id: "c7b0850e-adde-4624-91ee-289c1a39341e", name: "[YLGlobal] MissionUnitType QUERY Request", type: "profile.json", path: "null"},
+{id: "ef8a0fd3-6f5a-4f5a-8a86-1a19a989c4b4", name: "[Common] Get Current Date in Multiple Formats", type: "transform.function", path: "null"},
+{id: "3a42dcef-73a7-414c-927e-062c757aa9eb", name: "Error Information Canonical", type: "profile.json", path: "null"},
+{id: "3ae0b595-e0cf-4330-9ad1-83b778545ea0", name: "[Salesforce] Territory2Type QUERY", type: "connector-action", path: "null"},
+{id: "30f3139f-4151-4ba1-95c6-e8e4854b8823", name: "[YLGlobal] Salesforce.v_RPsToInsert QUERY", type: "connector-action", path: "null"},
+{id: "42688aa8-fb9e-4017-ab45-52fe7a3d746b", name: "[TEMP] Locations Transaction Log", type: "process", path: "null"},
+{id: "691f11a0-2817-4a0e-ba3b-b42ecb1de3e8", name: "[Common] Empty Flat File", type: "profile.flatfile", path: "null"},
+{id: "d5e5c41b-ecab-4b6a-8d6e-6985875db7d6", name: "Print Shop File Type SOQL Queries", type: "process", path: "null"},
+{id: "dcde50b2-a3da-4ad3-b216-ff5adb6bc530", name: "[Main] Generate Print Shop Files from SF", type: "process", path: "null"},
+{id: "a78c341c-4159-40c4-aeb9-9140f3c6f4e1", name: "[TEMP] Query Job Codes, then JCAC", type: "process", path: "null"},
+{id: "0008e606-0cbc-44b6-86e7-b0e6f6589544", name: "[DEPRECATED][YLGlobal] tblUser GET Response", type: "profile.json", path: "null"},
+{id: "451ee82f-55d4-4bb7-9828-18d4f7c2274a", name: "[Salesforce] User QUERY Response", type: "profile.xml", path: "null"},
+{id: "dae059af-fda6-4913-a0e6-3e9b291c87c4", name: "[YLGlobal] Salesforce.Responsible_Parties__c UPSERT Request", type: "profile.json", path: "null"},
+{id: "30b54919-c7ce-41db-a0b2-ffb644983400", name: "[YLGlobal] Salesforce.MissionUnit__c UPSERT Request", type: "profile.json", path: "null"},
+{id: "710686b8-129e-4cb0-903f-17a8a26feb41", name: "[DEPRECATED] [Salesforce] User QUERY Response", type: "profile.xml", path: "null"},
+{id: "bdae6fa9-dc14-4046-ad6e-c0fcddf17bf0", name: "[YLGlobal] Salesforce.SFUser UPSERT Request", type: "profile.json", path: "null"},
+{id: "e66ab9eb-25b0-46d9-a166-408c5132c565", name: "[Sync Salesforce Replication Tables] Build User UPSERT Request ", type: "transform.map", path: "null"},
+{id: "0b16b29d-e495-4315-9452-ac2ba3992667", name: "[Salesforce] Responsible_Parties__c QUERY Response", type: "profile.xml", path: "null"},
+{id: "ce167ede-f034-4fa9-88d7-fa7f984ce60b", name: "[Sync Salesforce Replication Tables] Build Responsible_Parties__c UPSERT Request ", type: "transform.map", path: "null"},
+{id: "eb69f8c1-2598-4b5f-9860-d946891fec5e", name: "[Salesforce] Responsible_Parties__c QUERY by SystemModstamp", type: "connector-action", path: "null"},
+{id: "55269e3a-736a-40de-a103-0a1f9c2f7c56", name: "[Salesforce] MissionUnit__c QUERY by SystemModstamp", type: "connector-action", path: "null"},
+{id: "8109510f-b3aa-4242-b700-03215d5b00ff", name: "[Salesforce] MissionUnit__c QUERY Response", type: "profile.xml", path: "null"},
+{id: "c36196f5-10f9-4ff8-b821-5097a40ed72b", name: "[Sync Salesforce Replication Tables] Build MissionUnit__c UPSERT Request ", type: "transform.map", path: "null"},
+
+            ],
+            references: [
+				{source: "2e162d7c-c7c9-487a-bfb9-650ebb373ce9", target: "12609865-eee2-48b8-b60d-e191ee7557a8"},
+{source: "b6cc21c0-9b61-415d-bfdb-c8f842cb8c35", target: "12609865-eee2-48b8-b60d-e191ee7557a8"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "12609865-eee2-48b8-b60d-e191ee7557a8"},
+{source: "f3e994f1-f485-4f8c-9aa4-04f943e117e1", target: "12609865-eee2-48b8-b60d-e191ee7557a8"},
+{source: "f4d4663e-1609-4860-8263-68e65e1f3b73", target: "12609865-eee2-48b8-b60d-e191ee7557a8"},
+{source: "12db9fd1-05a1-4594-abfc-521ef7dc3218", target: "6c4706b7-07bc-4e64-b2f6-0287165eaf97"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "12db9fd1-05a1-4594-abfc-521ef7dc3218"},
+{source: "05513bb8-5f58-47ca-b87d-7f37549a5217", target: "22d4621c-7238-4c9b-ac4e-be7479417ad5"},
+{source: "12db9fd1-05a1-4594-abfc-521ef7dc3218", target: "12609865-eee2-48b8-b60d-e191ee7557a8"},
+{source: "22d4621c-7238-4c9b-ac4e-be7479417ad5", target: "687a90ef-f214-43ae-a538-6f4aefb3e6b3"},
+{source: "22d4621c-7238-4c9b-ac4e-be7479417ad5", target: "ac339ac0-267f-4780-8957-761c0ea34b9f"},
+{source: "22d4621c-7238-4c9b-ac4e-be7479417ad5", target: "afd5c390-5670-47e5-80e0-8fb55c912f73"},
+{source: "22d4621c-7238-4c9b-ac4e-be7479417ad5", target: "bc94333c-e456-4635-8204-cb70c40e9920"},
+{source: "22d4621c-7238-4c9b-ac4e-be7479417ad5", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "22d4621c-7238-4c9b-ac4e-be7479417ad5"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "22d4621c-7238-4c9b-ac4e-be7479417ad5"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "22d4621c-7238-4c9b-ac4e-be7479417ad5"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "22d4621c-7238-4c9b-ac4e-be7479417ad5"},
+{source: "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3", target: "22d4621c-7238-4c9b-ac4e-be7479417ad5"},
+{source: "599f77c9-9fde-4513-af10-c0776847e5cc", target: "4f3e2ba7-5ea7-4a2d-ac27-ffe4e4b0b971"},
+{source: "e3f46149-daef-44d8-82fb-527e8ebdc4ec", target: "4f3e2ba7-5ea7-4a2d-ac27-ffe4e4b0b971"},
+{source: "599f77c9-9fde-4513-af10-c0776847e5cc", target: "78b51426-46bd-40ca-b225-92413f801b10"},
+{source: "e3f46149-daef-44d8-82fb-527e8ebdc4ec", target: "78b51426-46bd-40ca-b225-92413f801b10"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "9cf65e9c-19e4-4e91-a948-ea4f24b6084f"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "a4fadd67-7f38-4a71-aa2c-22b9bfa3e1f5"},
+{source: "afd5c390-5670-47e5-80e0-8fb55c912f73", target: "1eeaaebf-b0bc-4411-9aa9-554071e4b218"},
+{source: "73d5e9db-b8a2-4454-ab4a-f5ec340b5a8d", target: "7184d72e-e6c3-4108-9ff8-e58a0e511233"},
+{source: "afd5c390-5670-47e5-80e0-8fb55c912f73", target: "45be50a2-bfa9-483b-85d7-7e87d5d23a4a"},
+{source: "afd5c390-5670-47e5-80e0-8fb55c912f73", target: "7e87012e-1582-490f-bfd5-da6af5bcdfb8"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "c97eddfc-ac57-449c-91a6-99378335e269"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "05ea3f2e-beaa-489a-ba79-2a9a9329dada"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "063252ab-19f6-4a32-82fe-8a77075fa069"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "15115b4a-b72b-47fa-a124-cd0de54bee92"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "23f3fbbf-710c-465c-ab53-ebae58f7d4e8"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "3874594a-fc8f-4b47-9987-7c807253fab6"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "3a7d1068-689d-4262-978b-0a9e9e625abd"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "3cb61e70-c713-4466-8141-a46f6437f6e8"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "400e872e-3555-4778-9288-6c2cbad7a5ec"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "4cba6cb4-0ace-45a5-a993-27629cf83072"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "5973d8c0-3790-43cf-bc18-b2811c0dc94c"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "6841ff34-fbfb-493f-8799-a2ec4fbe2594"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "92a5ee6a-640a-4136-870d-e82a20f15cd9"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "c72147dd-916a-4f02-9161-c5669607c06f"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "e3f46149-daef-44d8-82fb-527e8ebdc4ec"},
+{source: "f1f65e96-6ba4-4df9-9988-ccd9d0c530ac", target: "202ee26c-7927-4267-b175-d461d3ff9ead"},
+{source: "f1f65e96-6ba4-4df9-9988-ccd9d0c530ac", target: "ac9d1440-91d3-4cb2-b4a5-f41fafcdc2c9"},
+{source: "f3e994f1-f485-4f8c-9aa4-04f943e117e1", target: "ebcba8b7-8838-40cb-8721-817795e72a7c"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "05467905-8cbb-4739-9fe2-98afce436b9f"},
+{source: "68709a4c-30f5-4b71-8e38-4e67118ea019", target: "11f5becc-9e94-454c-9c69-1c5e8845bb16"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "11f5becc-9e94-454c-9c69-1c5e8845bb16"},
+{source: "f1140bc8-d3f6-4b06-a7c0-092e3b935f39", target: "f3e994f1-f485-4f8c-9aa4-04f943e117e1"},
+{source: "01c4be5c-8386-46dc-9fe2-9894417d9242", target: "05467905-8cbb-4739-9fe2-98afce436b9f"},
+{source: "142807e8-ac34-4bc8-b7bb-ffa29588f409", target: "7335fc87-15b4-4060-bf04-d71ab7254307"},
+{source: "142807e8-ac34-4bc8-b7bb-ffa29588f409", target: "ebcba8b7-8838-40cb-8721-817795e72a7c"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "142807e8-ac34-4bc8-b7bb-ffa29588f409"},
+{source: "169ae022-1dbb-4ebd-a481-a57aeb05abdb", target: "7335fc87-15b4-4060-bf04-d71ab7254307"},
+{source: "169ae022-1dbb-4ebd-a481-a57aeb05abdb", target: "eb5ae59d-5178-455b-9b1b-eb9eb9b0dd7f"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "169ae022-1dbb-4ebd-a481-a57aeb05abdb"},
+{source: "1940e385-2a7c-4170-9289-687d3e9687e8", target: "336f4268-2868-4e9d-949b-eba15b120814"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "1940e385-2a7c-4170-9289-687d3e9687e8"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "1940e385-2a7c-4170-9289-687d3e9687e8"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "1de0e957-63aa-47b9-b4b6-65903dbb6aeb"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "1de0e957-63aa-47b9-b4b6-65903dbb6aeb"},
+{source: "0537867e-fccc-400d-83f2-75a144d07444", target: "336f4268-2868-4e9d-949b-eba15b120814"},
+{source: "6d721562-fb97-4577-aa74-7e04bb27d1c3", target: "336f4268-2868-4e9d-949b-eba15b120814"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "336f4268-2868-4e9d-949b-eba15b120814"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "336f4268-2868-4e9d-949b-eba15b120814"},
+{source: "400e872e-3555-4778-9288-6c2cbad7a5ec", target: "3b1edffd-ecbb-44c6-a634-959cbc579e09"},
+{source: "400e872e-3555-4778-9288-6c2cbad7a5ec", target: "7335fc87-15b4-4060-bf04-d71ab7254307"},
+{source: "305ce848-4dac-48f7-aaec-6df323abb216", target: "b09d432c-07b3-4934-8e4c-20f0b3bd6c5f"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "400e872e-3555-4778-9288-6c2cbad7a5ec"},
+{source: "01c4be5c-8386-46dc-9fe2-9894417d9242", target: "5bf2b41d-531f-4b8d-9b1f-856d67d22179"},
+{source: "7cc4faf6-dac4-4343-b5f7-d649b11ae39d", target: "5bf2b41d-531f-4b8d-9b1f-856d67d22179"},
+{source: "9908545d-5496-4847-a210-1bcdaa3151b3", target: "5bf2b41d-531f-4b8d-9b1f-856d67d22179"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "5bf2b41d-531f-4b8d-9b1f-856d67d22179"},
+{source: "f6e31445-ff6d-4499-afb0-6e0411bbf930", target: "5bf2b41d-531f-4b8d-9b1f-856d67d22179"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "68709a4c-30f5-4b71-8e38-4e67118ea019"},
+{source: "6b99b98f-73fd-4b5a-82f5-6f311776e0a7", target: "a4597cf2-fffe-48c9-9057-00c91e25ed25"},
+{source: "6d721562-fb97-4577-aa74-7e04bb27d1c3", target: "58516175-78ff-4c54-bef7-0a4db8676b55"},
+{source: "6d721562-fb97-4577-aa74-7e04bb27d1c3", target: "7335fc87-15b4-4060-bf04-d71ab7254307"},
+{source: "6d721562-fb97-4577-aa74-7e04bb27d1c3", target: "f237f35c-b900-4dcb-b51d-021c738444a2"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "6d721562-fb97-4577-aa74-7e04bb27d1c3"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "6d721562-fb97-4577-aa74-7e04bb27d1c3"},
+{source: "0537867e-fccc-400d-83f2-75a144d07444", target: "7335fc87-15b4-4060-bf04-d71ab7254307"},
+{source: "01c4be5c-8386-46dc-9fe2-9894417d9242", target: "7cc4faf6-dac4-4343-b5f7-d649b11ae39d"},
+{source: "7cc4faf6-dac4-4343-b5f7-d649b11ae39d", target: "f3c7f327-8fcf-49f0-a86b-5c9bbf3771ad"},
+{source: "9908545d-5496-4847-a210-1bcdaa3151b3", target: "7cc4faf6-dac4-4343-b5f7-d649b11ae39d"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "7cc4faf6-dac4-4343-b5f7-d649b11ae39d"},
+{source: "f6e31445-ff6d-4499-afb0-6e0411bbf930", target: "7cc4faf6-dac4-4343-b5f7-d649b11ae39d"},
+{source: "5728996a-9fd4-485c-88b8-96329d2b6c72", target: "893c689e-afd7-4368-8ba3-91c1041c1b38"},
+{source: "893c689e-afd7-4368-8ba3-91c1041c1b38", target: "02de5970-60bd-4e55-87a4-9b9bda937d3c"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "893c689e-afd7-4368-8ba3-91c1041c1b38"},
+{source: "8ad5a2c6-0ed8-4280-9956-ac733e6e00f4", target: "eb644d42-5b79-4d56-ae3d-baf3479bf870"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "8ad5a2c6-0ed8-4280-9956-ac733e6e00f4"},
+{source: "9908545d-5496-4847-a210-1bcdaa3151b3", target: "5973d8c0-3790-43cf-bc18-b2811c0dc94c"},
+{source: "9908545d-5496-4847-a210-1bcdaa3151b3", target: "f3c7f327-8fcf-49f0-a86b-5c9bbf3771ad"},
+{source: "3c4c5231-b111-474a-aec9-6177ce6d60e4", target: "893c689e-afd7-4368-8ba3-91c1041c1b38"},
+{source: "b98aa0ee-392e-44b4-9db7-bf3f27295577", target: "ebcba8b7-8838-40cb-8721-817795e72a7c"},
+{source: "01c4be5c-8386-46dc-9fe2-9894417d9242", target: "c0ba9cd8-5a15-44ae-9e39-a870b95478e4"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "c0ba9cd8-5a15-44ae-9e39-a870b95478e4"},
+{source: "01c4be5c-8386-46dc-9fe2-9894417d9242", target: "c55278c5-7d25-4c18-8bc8-1167b14c2560"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "c55278c5-7d25-4c18-8bc8-1167b14c2560"},
+{source: "5728996a-9fd4-485c-88b8-96329d2b6c72", target: "e2e89f6e-b519-4535-96da-cfb208dcee7c"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "e2e89f6e-b519-4535-96da-cfb208dcee7c"},
+{source: "e2e89f6e-b519-4535-96da-cfb208dcee7c", target: "68959c06-92fa-44c7-8c47-5db942c9615b"},
+{source: "3c4c5231-b111-474a-aec9-6177ce6d60e4", target: "e2e89f6e-b519-4535-96da-cfb208dcee7c"},
+{source: "c4c7681b-02a6-4907-aa04-48796291e9c8", target: "eb644d42-5b79-4d56-ae3d-baf3479bf870"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "18059050-f8c8-4cb8-a318-511068ea59ed"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "23f3fbbf-710c-465c-ab53-ebae58f7d4e8"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "4343c7df-71b4-4e0a-8bb1-60cf314234a2"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "5973d8c0-3790-43cf-bc18-b2811c0dc94c"},
+{source: "01c4be5c-8386-46dc-9fe2-9894417d9242", target: "f3c7f327-8fcf-49f0-a86b-5c9bbf3771ad"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "f3c7f327-8fcf-49f0-a86b-5c9bbf3771ad"},
+{source: "f237f35c-b900-4dcb-b51d-021c738444a2", target: "fc81c5ba-a7bf-41d4-a12e-dcd8c13e01d1"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "1006a866-9950-4113-a31e-cbc98869b555"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "1d1770a5-0f79-4d5c-8e68-d668443b639b"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "23f3fbbf-710c-465c-ab53-ebae58f7d4e8"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "3874594a-fc8f-4b47-9987-7c807253fab6"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "3a7d1068-689d-4262-978b-0a9e9e625abd"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "3cb61e70-c713-4466-8141-a46f6437f6e8"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "4cba6cb4-0ace-45a5-a993-27629cf83072"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "5973d8c0-3790-43cf-bc18-b2811c0dc94c"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "6841ff34-fbfb-493f-8799-a2ec4fbe2594"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "8eb4aeb6-fe5b-4823-b142-7d6fa57fd1d2"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "92a5ee6a-640a-4136-870d-e82a20f15cd9"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "012fc765-697f-4abd-9c8a-cc12a550f99e", target: "acf211c7-49a2-42ee-bc08-7bf812c2993d"},
+{source: "012fc765-697f-4abd-9c8a-cc12a550f99e", target: "e133a78e-319c-40b0-8c0f-d23c67935e16"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "012fc765-697f-4abd-9c8a-cc12a550f99e"},
+{source: "c623e734-6386-46e4-bffd-fe53f2fd7699", target: "012fc765-697f-4abd-9c8a-cc12a550f99e"},
+{source: "01e4c437-3296-4a93-ad98-0ac1e21d8690", target: "662f3c2e-a161-413e-9218-8310474250a6"},
+{source: "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7", target: "f2d5c9d1-7095-449e-860f-0fe3437b2a82"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "01e4c437-3296-4a93-ad98-0ac1e21d8690"},
+{source: "0f3d69b0-50b0-43c3-84a8-50431acba12b", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "0f3d69b0-50b0-43c3-84a8-50431acba12b"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "0f3d69b0-50b0-43c3-84a8-50431acba12b"},
+{source: "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3", target: "0f3d69b0-50b0-43c3-84a8-50431acba12b"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "08067b65-bc76-4c61-bd2d-1f86adee8c6d"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "25904990-a997-471c-8f26-fcb04b8d18b5"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "2a3b239f-c933-4235-9a9d-935372856fa4"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "35951e23-297a-4ab7-ad7e-35cb2bd8f37b"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "4cba6cb4-0ace-45a5-a993-27629cf83072"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "790a6999-a5c3-4b85-990c-c6cb69488fdf"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "7dfbe045-b021-4912-b1bf-7be8dd477e13"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "90d8c97d-cbde-4f14-8e2f-2fd1324fde71"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "9ee177bf-10ec-40b3-b189-a5c1785d6a7d"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "acf211c7-49a2-42ee-bc08-7bf812c2993d"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "bae5773f-f743-40a7-a597-e5fb30322cf2"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "e133a78e-319c-40b0-8c0f-d23c67935e16"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "e4dd4cb9-290a-4d9d-9531-6c201be0fd99"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "f4632f5c-02a3-4459-a42f-2ff5bac9f043"},
+{source: "133fdedb-2b74-4a4e-a271-480b1656ae69", target: "fd9e0a87-4efd-462a-80a9-55cecfaa86b7"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "133fdedb-2b74-4a4e-a271-480b1656ae69"},
+{source: "794171d1-ff22-4f08-8461-766b5dd5a4c0", target: "1db47101-deea-4698-a7cc-c3dd7aeb1122"},
+{source: "3c4c5231-b111-474a-aec9-6177ce6d60e4", target: "1db47101-deea-4698-a7cc-c3dd7aeb1122"},
+{source: "a69c170d-8fba-4cd2-9283-be1abc1f0356", target: "1db47101-deea-4698-a7cc-c3dd7aeb1122"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "1db47101-deea-4698-a7cc-c3dd7aeb1122"},
+{source: "223bf915-6c3f-4215-bc4b-50603113765f", target: "6c4706b7-07bc-4e64-b2f6-0287165eaf97"},
+{source: "223bf915-6c3f-4215-bc4b-50603113765f", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "223bf915-6c3f-4215-bc4b-50603113765f"},
+{source: "c32c0dd7-c18c-4f79-86a3-20981be1ec44", target: "2a379185-cc0c-451b-b940-7e11d585dd6d"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "369a93b4-6d14-4e5b-a5ab-ecac3807bdab"},
+{source: "369a93b4-6d14-4e5b-a5ab-ecac3807bdab", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "3c4c5231-b111-474a-aec9-6177ce6d60e4", target: "3c49f33a-b23c-44a3-b9ee-d7184bd1ccc6"},
+{source: "a69c170d-8fba-4cd2-9283-be1abc1f0356", target: "3c49f33a-b23c-44a3-b9ee-d7184bd1ccc6"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "3c49f33a-b23c-44a3-b9ee-d7184bd1ccc6"},
+{source: "46b31f47-fe28-47a8-8e50-1e36e5af2e2c", target: "e133a78e-319c-40b0-8c0f-d23c67935e16"},
+{source: "492ee154-5ac1-495a-a654-df0e1868b16b", target: "687a90ef-f214-43ae-a538-6f4aefb3e6b3"},
+{source: "492ee154-5ac1-495a-a654-df0e1868b16b", target: "c4298a0b-229f-4b81-a1be-441e4adecbd7"},
+{source: "492ee154-5ac1-495a-a654-df0e1868b16b", target: "c5225678-5bde-436b-9e44-61e53018ff7f"},
+{source: "492ee154-5ac1-495a-a654-df0e1868b16b", target: "d089338b-6f14-4128-af4b-c76d6d797e9d"},
+{source: "492ee154-5ac1-495a-a654-df0e1868b16b", target: "f214f594-605f-416a-91ee-b259f29f8985"},
+{source: "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3", target: "4ac57f5b-8f2c-4576-955a-07e5c5bcf9af"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "878289ce-89b4-4920-a162-cba3a236825e"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "8c6706b7-2e73-4f04-b4c4-4c2c403191ab"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "9ee177bf-10ec-40b3-b189-a5c1785d6a7d"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2", target: "e76c1588-1470-4bc4-a913-0a6f6028ce32"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2"},
+{source: "bae5773f-f743-40a7-a597-e5fb30322cf2", target: "4decaf07-6301-4f40-bfbf-39c9b0c76dd3"},
+{source: "f4632f5c-02a3-4459-a42f-2ff5bac9f043", target: "4decaf07-6301-4f40-bfbf-39c9b0c76dd3"},
+{source: "b19d5c99-d713-4155-a345-14fa0c7d6a41", target: "4eabf477-940f-454e-8143-da9bfaef70c3"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "4eabf477-940f-454e-8143-da9bfaef70c3"},
+{source: "a6f9b188-143d-4da6-846e-fd654bd22b61", target: "522b5781-1bec-432b-88fc-abe9ebda7a65"},
+{source: "55660029-8202-4cfa-a4c0-9a2f512721a4", target: "c5225678-5bde-436b-9e44-61e53018ff7f"},
+{source: "55660029-8202-4cfa-a4c0-9a2f512721a4", target: "d089338b-6f14-4128-af4b-c76d6d797e9d"},
+{source: "55660029-8202-4cfa-a4c0-9a2f512721a4", target: "f214f594-605f-416a-91ee-b259f29f8985"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "55660029-8202-4cfa-a4c0-9a2f512721a4"},
+{source: "5c85ac2c-3e00-4b9a-a4ea-c5c2618ae5fc", target: "c4298a0b-229f-4b81-a1be-441e4adecbd7"},
+{source: "67a0add5-7e77-4707-abbe-d99f8297e417", target: "bc94333c-e456-4635-8204-cb70c40e9920"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "21e25ada-6344-4fc8-abfe-49113af1654a"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "3a7d1068-689d-4262-978b-0a9e9e625abd"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "4cba6cb4-0ace-45a5-a993-27629cf83072"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "57f231c0-ae9f-4209-84ce-2c468e19e909"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "7bacef67-8180-4fd0-ae63-382050b779ca"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "67a0add5-7e77-4707-abbe-d99f8297e417"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "8c6706b7-2e73-4f04-b4c4-4c2c403191ab"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "9ee177bf-10ec-40b3-b189-a5c1785d6a7d"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "b1490fe3-d4ac-4900-8b87-b0f9ac0fb8dd"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "b35143de-d151-4222-ae9e-88bd06b42e79"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "bc94333c-e456-4635-8204-cb70c40e9920"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "d986e440-deea-4f30-88d1-20784af99ac4"},
+{source: "6f78d8a4-9c9f-42ef-b0ef-726f8370f4e8", target: "fd58fad6-857e-4c8e-a3d1-0d2a0a061536"},
+{source: "4fc0b8bb-1910-44c6-99e7-5647db22fda1", target: "771b0939-8915-448f-b4fd-dd1ddb24afc0"},
+{source: "7e87012e-1582-490f-bfd5-da6af5bcdfb8", target: "3f541e81-9c24-40bc-b900-83c83815c15c"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "7e87012e-1582-490f-bfd5-da6af5bcdfb8"},
+{source: "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3", target: "7e87012e-1582-490f-bfd5-da6af5bcdfb8"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "4cba6cb4-0ace-45a5-a993-27629cf83072"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "bc94333c-e456-4635-8204-cb70c40e9920"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "e76c1588-1470-4bc4-a913-0a6f6028ce32"},
+{source: "d72ee8a9-2dd4-44f5-9ef3-18cbc6d1b75f", target: "8c105fcc-d5c5-409d-96ce-5fca1efc69c7"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "8c26a097-ba84-42a8-9fe5-f23d81833a1d"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "878289ce-89b4-4920-a162-cba3a236825e"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "8c26a097-ba84-42a8-9fe5-f23d81833a1d"},
+{source: "8698d10d-abba-4ab2-a96b-4f3c1d46d83d", target: "8c6706b7-2e73-4f04-b4c4-4c2c403191ab"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "063252ab-19f6-4a32-82fe-8a77075fa069"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "1126be9c-626d-4db4-88d0-ac5dc1f1796b"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "6c4706b7-07bc-4e64-b2f6-0287165eaf97"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "7dfbe045-b021-4912-b1bf-7be8dd477e13"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "91a4dda7-227b-4e3b-be1a-7b6e687b01e8"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "94db29b1-2f4a-457f-a699-a0aae9cd0e3b"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "9e614e6b-cb13-46ab-8b96-9d4992499e0c"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "c5225678-5bde-436b-9e44-61e53018ff7f"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "d5323351-ea2b-4fba-a08e-86d97b247aac"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "f214f594-605f-416a-91ee-b259f29f8985"},
+{source: "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09", target: "fffe885d-23c5-41fd-8105-7dc51f45033a"},
+{source: "f4632f5c-02a3-4459-a42f-2ff5bac9f043", target: "90d8c97d-cbde-4f14-8e2f-2fd1324fde71"},
+{source: "94db29b1-2f4a-457f-a699-a0aae9cd0e3b", target: "6c4706b7-07bc-4e64-b2f6-0287165eaf97"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "4cba6cb4-0ace-45a5-a993-27629cf83072"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "878289ce-89b4-4920-a162-cba3a236825e"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "8c6706b7-2e73-4f04-b4c4-4c2c403191ab"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "ae34e3db-b52b-4790-9b36-9e0d850c0b31"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "bc94333c-e456-4635-8204-cb70c40e9920"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8", target: "e76c1588-1470-4bc4-a913-0a6f6028ce32"},
+{source: "9ee177bf-10ec-40b3-b189-a5c1785d6a7d", target: "496c839c-887e-46a3-aedb-0f6f60950bad"},
+{source: "a6f9b188-143d-4da6-846e-fd654bd22b61", target: "c4298a0b-229f-4b81-a1be-441e4adecbd7"},
+{source: "a6f9b188-143d-4da6-846e-fd654bd22b61", target: "c5225678-5bde-436b-9e44-61e53018ff7f"},
+{source: "a6f9b188-143d-4da6-846e-fd654bd22b61", target: "cf75b18d-ad58-4b56-9603-921fe1c7777d"},
+{source: "ae34e3db-b52b-4790-9b36-9e0d850c0b31", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "af9aa22c-cdff-4d45-a61a-c1708f84c5fc"},
+{source: "b1490fe3-d4ac-4900-8b87-b0f9ac0fb8dd", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3", target: "b1490fe3-d4ac-4900-8b87-b0f9ac0fb8dd"},
+{source: "30f3139f-4151-4ba1-95c6-e8e4854b8823", target: "af9aa22c-cdff-4d45-a61a-c1708f84c5fc"},
+{source: "3c4c5231-b111-474a-aec9-6177ce6d60e4", target: "af9aa22c-cdff-4d45-a61a-c1708f84c5fc"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "08067b65-bc76-4c61-bd2d-1f86adee8c6d"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "1eeaaebf-b0bc-4411-9aa9-554071e4b218"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "3a42dcef-73a7-414c-927e-062c757aa9eb"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "3ae0b595-e0cf-4330-9ad1-83b778545ea0"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "7dfbe045-b021-4912-b1bf-7be8dd477e13"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "95cfb051-f6d0-48a0-811c-efe4017fa7e0"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "bd00318c-973f-4cce-a061-e4609e21026a"},
+{source: "b35143de-d151-4222-ae9e-88bd06b42e79", target: "c7b0850e-adde-4624-91ee-289c1a39341e"},
+{source: "b724a3d8-e8e9-4033-aed9-b6776c628cad", target: "687a90ef-f214-43ae-a538-6f4aefb3e6b3"},
+{source: "b724a3d8-e8e9-4033-aed9-b6776c628cad", target: "c4298a0b-229f-4b81-a1be-441e4adecbd7"},
+{source: "b724a3d8-e8e9-4033-aed9-b6776c628cad", target: "ef8a0fd3-6f5a-4f5a-8a86-1a19a989c4b4"},
+{source: "b724a3d8-e8e9-4033-aed9-b6776c628cad", target: "f214f594-605f-416a-91ee-b259f29f8985"},
+{source: "42688aa8-fb9e-4017-ab45-52fe7a3d746b", target: "bab883a4-fb94-40e0-b063-38fc3aa2058b"},
+{source: "bab883a4-fb94-40e0-b063-38fc3aa2058b", target: "691f11a0-2817-4a0e-ba3b-b42ecb1de3e8"},
+{source: "bab883a4-fb94-40e0-b063-38fc3aa2058b", target: "f7e3a7a1-62de-4b34-ab69-722f8778ccae"},
+{source: "c5225678-5bde-436b-9e44-61e53018ff7f", target: "1126be9c-626d-4db4-88d0-ac5dc1f1796b"},
+{source: "d5e5c41b-ecab-4b6a-8d6e-6985875db7d6", target: "c5225678-5bde-436b-9e44-61e53018ff7f"},
+{source: "cf061359-1b78-42f2-b8a1-9a1d1e3a940c", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "57f231c0-ae9f-4209-84ce-2c468e19e909", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "fffe885d-23c5-41fd-8105-7dc51f45033a", target: "d3bf1b62-8d8d-4206-af1e-2a158125622f"},
+{source: "d5323351-ea2b-4fba-a08e-86d97b247aac", target: "1126be9c-626d-4db4-88d0-ac5dc1f1796b"},
+{source: "3c4c5231-b111-474a-aec9-6177ce6d60e4", target: "c7a7d215-b513-462d-ae97-f7d27cedb7d8"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "c7a7d215-b513-462d-ae97-f7d27cedb7d8"},
+{source: "c32c0dd7-c18c-4f79-86a3-20981be1ec44", target: "c7a7d215-b513-462d-ae97-f7d27cedb7d8"},
+{source: "d5323351-ea2b-4fba-a08e-86d97b247aac", target: "9e614e6b-cb13-46ab-8b96-9d4992499e0c"},
+{source: "42688aa8-fb9e-4017-ab45-52fe7a3d746b", target: "d72ee8a9-2dd4-44f5-9ef3-18cbc6d1b75f"},
+{source: "d72ee8a9-2dd4-44f5-9ef3-18cbc6d1b75f", target: "f7e3a7a1-62de-4b34-ab69-722f8778ccae"},
+{source: "c623e734-6386-46e4-bffd-fe53f2fd7699", target: "e133a78e-319c-40b0-8c0f-d23c67935e16"},
+{source: "42688aa8-fb9e-4017-ab45-52fe7a3d746b", target: "f7e3a7a1-62de-4b34-ab69-722f8778ccae"},
+{source: "a78c341c-4159-40c4-aeb9-9140f3c6f4e1", target: "fba02f74-c7e6-471f-b095-08e6bcf2f10a"},
+{source: "fba02f74-c7e6-471f-b095-08e6bcf2f10a", target: "1126be9c-626d-4db4-88d0-ac5dc1f1796b"},
+{source: "fba02f74-c7e6-471f-b095-08e6bcf2f10a", target: "9e614e6b-cb13-46ab-8b96-9d4992499e0c"},
+{source: "ff80278a-f524-4d34-9ec3-178532f5ab2a", target: "0008e606-0cbc-44b6-86e7-b0e6f6589544"},
+{source: "fffe885d-23c5-41fd-8105-7dc51f45033a", target: "687a90ef-f214-43ae-a538-6f4aefb3e6b3"},
+{source: "fffe885d-23c5-41fd-8105-7dc51f45033a", target: "6c4706b7-07bc-4e64-b2f6-0287165eaf97"},
+{source: "05942e30-2e5c-4a2b-8c3f-a3c874bcc3cc", target: "451ee82f-55d4-4bb7-9828-18d4f7c2274a"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "05942e30-2e5c-4a2b-8c3f-a3c874bcc3cc"},
+{source: "b19d5c99-d713-4155-a345-14fa0c7d6a41", target: "05942e30-2e5c-4a2b-8c3f-a3c874bcc3cc"},
+{source: "1c534584-163b-4b67-a9b9-51fa7012f549", target: "cb01fcdd-3231-4ee8-b9a5-3c02f8b6769f"},
+{source: "1c534584-163b-4b67-a9b9-51fa7012f549", target: "dae059af-fda6-4913-a0e6-3e9b291c87c4"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "1c534584-163b-4b67-a9b9-51fa7012f549"},
+{source: "b19d5c99-d713-4155-a345-14fa0c7d6a41", target: "1c534584-163b-4b67-a9b9-51fa7012f549"},
+{source: "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd", target: "1c534584-163b-4b67-a9b9-51fa7012f549"},
+{source: "1d631e11-3b66-438e-972d-c754a583084c", target: "30b54919-c7ce-41db-a0b2-ffb644983400"},
+{source: "1d631e11-3b66-438e-972d-c754a583084c", target: "d0afd2c7-8eca-4631-a444-bf81550e50d6"},
+{source: "b19d5c99-d713-4155-a345-14fa0c7d6a41", target: "1d631e11-3b66-438e-972d-c754a583084c"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "1d631e11-3b66-438e-972d-c754a583084c"},
+{source: "1ee9b9f1-795a-46eb-b1d5-a05cb22d5a84", target: "c2621aaf-5023-4116-87ad-87271f951024"},
+{source: "1ee9b9f1-795a-46eb-b1d5-a05cb22d5a84", target: "fdd9bcff-5ff4-4381-b6e9-651c73527208"},
+{source: "c0f3379d-fcee-4381-b75e-54ee0e5d7022", target: "2b185a77-5814-46b0-bc2a-5ab06329325a"},
+{source: "8d4cd5cc-25db-4e95-8bf5-38a517667b4e", target: "3034a1a5-3719-4277-8251-30e3d43a04fc"},
+{source: "c0f3379d-fcee-4381-b75e-54ee0e5d7022", target: "49312069-93b4-4a86-abd1-4b42d8de7ccc"},
+{source: "9df26fdd-34f7-4198-baf5-b699eaae64f5", target: "537a077e-e253-4831-b836-d0a8a87e7d77"},
+{source: "63afbf9e-3ff5-473c-b4df-8b1e16177696", target: "75423f90-94eb-4981-ab4f-f1b05614ddd9"},
+{source: "63afbf9e-3ff5-473c-b4df-8b1e16177696", target: "c42d861a-33ed-436a-97fe-5ca0e2cc0547"},
+{source: "aad921c7-daaf-44ce-89eb-8820332ae231", target: "6664ceb1-33b9-4022-980c-3f0d46027966"},
+{source: "8d4cd5cc-25db-4e95-8bf5-38a517667b4e", target: "6b214273-75b7-418c-bfae-26d222b7d8c7"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "08067b65-bc76-4c61-bd2d-1f86adee8c6d"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "3a42dcef-73a7-414c-927e-062c757aa9eb"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "710686b8-129e-4cb0-903f-17a8a26feb41"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "7dfbe045-b021-4912-b1bf-7be8dd477e13"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "aad921c7-daaf-44ce-89eb-8820332ae231"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "bdae6fa9-dc14-4046-ad6e-c0fcddf17bf0"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "e66ab9eb-25b0-46d9-a166-408c5132c565"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "08067b65-bc76-4c61-bd2d-1f86adee8c6d"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "0b16b29d-e495-4315-9452-ac2ba3992667"},
+{source: "6d6259e2-74d4-4510-948f-71575f8dcc31", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "3a42dcef-73a7-414c-927e-062c757aa9eb"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "7dfbe045-b021-4912-b1bf-7be8dd477e13"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "ce167ede-f034-4fa9-88d7-fa7f984ce60b"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "dae059af-fda6-4913-a0e6-3e9b291c87c4"},
+{source: "96861987-3e7b-4f8f-9816-1fa299d533f6", target: "eb69f8c1-2598-4b5f-9860-d946891fec5e"},
+{source: "9df26fdd-34f7-4198-baf5-b699eaae64f5", target: "e07110bd-ad23-4c94-889d-9de6b9c823d5"},
+{source: "b19d5c99-d713-4155-a345-14fa0c7d6a41", target: "9df26fdd-34f7-4198-baf5-b699eaae64f5"},
+{source: "aad921c7-daaf-44ce-89eb-8820332ae231", target: "bdae6fa9-dc14-4046-ad6e-c0fcddf17bf0"},
+{source: "b19d5c99-d713-4155-a345-14fa0c7d6a41", target: "aad921c7-daaf-44ce-89eb-8820332ae231"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "08067b65-bc76-4c61-bd2d-1f86adee8c6d"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "0ed9a92c-b810-4843-9da4-b61d10f63d6d"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "30b54919-c7ce-41db-a0b2-ffb644983400"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "3a42dcef-73a7-414c-927e-062c757aa9eb"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "55269e3a-736a-40de-a103-0a1f9c2f7c56"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "66675a6a-c98a-4c22-b626-ed76803a0104"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "7dfbe045-b021-4912-b1bf-7be8dd477e13"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "8109510f-b3aa-4242-b700-03215d5b00ff"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "b534ada2-ec21-4e77-8b91-147827846443"},
+{source: "b36fda30-badf-4a7b-860d-6ed34c32988c", target: "c36196f5-10f9-4ff8-b821-5097a40ed72b"},
+{source: "b19d5c99-d713-4155-a345-14fa0c7d6a41", target: "e07110bd-ad23-4c94-889d-9de6b9c823d5"},
+
+            ]
+        };
+        
+        let graph = {
+            nodes: [],
+            links: []
+        };
+        
+        let isolatedComponents = [];
+        let showIsolated = false;
+        let simulation = null;
+        
+        function initializeGraph() {
+            // Reset graph
+            graph.nodes = [];
+            graph.links = [];
+            isolatedComponents = [];
+            
+            // Create a map to track referenced components
+            const referencedComponents = new Set();
+            sampleData.references.forEach(ref => {
+                referencedComponents.add(ref.source);
+                referencedComponents.add(ref.target);
+            });
+            
+            // Process all components
+            sampleData.components.forEach(comp => {
+                const node = {
+                    id: comp.id,
+                    name: comp.name,
+                    type: comp.type,
+                    path: comp.path,
+                    isIsolated: !referencedComponents.has(comp.id),
+                    x: undefined,
+                    y: undefined,
+                    fx: undefined,
+                    fy: undefined
+                };
+                
+                if (node.isIsolated) {
+                    isolatedComponents.push(node);
+                }
+                
+                graph.nodes.push(node);
+            });
+            
+            // Add all links
+            sampleData.references.forEach(ref => {
+                graph.links.push({
+                    source: ref.source,
+                    target: ref.target
+                });
+            });
+            
+            // Update the isolated components table
+            updateIsolatedTable();
+        }
+        
+        function updateIsolatedTable() {
+            const tableBody = document.querySelector("#isolatedTable tbody");
+            tableBody.innerHTML = "";
+            
+            if (isolatedComponents.length === 0) {
+                const row = document.createElement("tr");
+                row.innerHTML = "<td colspan='3'>No isolated components found.</td>";
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            isolatedComponents.forEach(comp => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${comp.name}</td>
+                    <td>${comp.type}</td>
+                    <td>${comp.path}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function initializeDiagram() {
+            const width = document.getElementById("diagram").clientWidth;
+            const height = document.getElementById("diagram").clientHeight;
+            
+            // Clear previous SVG if exists
+            d3.select("#diagram svg").remove();
+            
+            // Create SVG
+            const svg = d3.select("#diagram")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .call(d3.zoom().on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                }));
+            
+            // Define arrowhead marker
+            svg.append("defs").append("marker")
+                .attr("id", "arrowhead")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 20)
+                .attr("refY", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M0,-5L10,0L0,5");
+            
+            // Create main group for zoom/pan
+            const g = svg.append("g");
+            
+            // Filter nodes based on isolated toggle
+            const visibleNodes = showIsolated ? 
+                graph.nodes : 
+                graph.nodes.filter(d => !d.isIsolated);
+            
+            // Initial node positioning if not already defined
+            positionNodesInitially(visibleNodes, width, height);
+            
+            // Create simulation with very weak forces (mostly for initialization)
+            simulation = d3.forceSimulation(visibleNodes)
+                .force("link", d3.forceLink(graph.links)
+                    .id(d => d.id)
+                    .distance(150)
+                    .strength(0.05)) // Very weak link force
+                .force("charge", d3.forceManyBody().strength(-50)) // Very weak charge
+                .force("center", d3.forceCenter(width / 2, height / 2).strength(0.05)) // Very weak centering
+                .force("collision", d3.forceCollide(70).strength(0.2)); // Weak collision
+            
+            // Immediately stop simulation after initial layout
+            simulation.stop();
+            
+            // Run simulation for 300 iterations and then stop (just to get initial positioning)
+            simulation.tick(300);
+            
+            // Draw links
+            const link = g.append("g")
+                .selectAll("path")
+                .data(graph.links)
+                .enter()
+                .append("path")
+                .attr("class", "link");
+            
+            // Draw nodes
+            const node = g.append("g")
+                .selectAll(".node")
+                .data(visibleNodes)
+                .enter()
+                .append("g")
+                .attr("class", d => d.isIsolated ? "node isolated-node" : "node")
+                .attr("transform", d => `translate(${d.x}, ${d.y})`)
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+            
+            node.append("rect")
+                .attr("width", d => Math.max(d.name.length * 8, 100))
+                .attr("height", 40)
+                .attr("x", d => -(Math.max(d.name.length * 8, 100) / 2))
+                .attr("y", -20)
+                .attr("rx", 5)
+                .attr("ry", 5)
+                .attr("fill", d => {
+                    switch (d.type) {
+                        case "process": return "#a5d6a7"; // Green
+                        case "connector-settings": return "#90caf9"; // Light Blue
+                        case "connector-action": return "#ffcc80"; //Light Yellow
+                        default: return "#ffffff";
+                    }
+                });
+            
+            node.append("text")
+                .text(d => d.name)
+                .attr("font-size", "12px");
+            
+            // Add click event for component details
+            node.on("click", function(event, d) {
+                if (!event.defaultPrevented) { // Only if not dragging
+                    event.stopPropagation();
+                    showComponentDetails(d);
+                }
+            });
+            
+            // Function to update link positions
+            function updateLinks() {
+                link.attr("d", d => {
+                    const sourceNode = visibleNodes.find(n => n.id === (typeof d.source === 'object' ? d.source.id : d.source));
+                    const targetNode = visibleNodes.find(n => n.id === (typeof d.target === 'object' ? d.target.id : d.target));
+                    
+                    if (!sourceNode || !targetNode) return "";
+                    
+                    const sourceWidth = Math.max(sourceNode.name.length * 8, 100) / 2;
+                    const targetWidth = Math.max(targetNode.name.length * 8, 100) / 2;
+                    
+                    const dx = targetNode.x - sourceNode.x;
+                    const dy = targetNode.y - sourceNode.y;
+                    const angle = Math.atan2(dy, dx);
+                    
+                    const sourceX = sourceNode.x + sourceWidth * Math.cos(angle);
+                    const sourceY = sourceNode.y + 20 * Math.sin(angle);
+                    const targetX = targetNode.x - targetWidth * Math.cos(angle);
+                    const targetY = targetNode.y - 20 * Math.sin(angle);
+                    
+                    return `M${sourceX},${sourceY} L${targetX},${targetY}`;
+                });
+            }
+            
+            // Initial link update
+            updateLinks();
+            
+            function dragstarted(event, d) {
+                d3.select(this).raise();
+                event.sourceEvent.stopPropagation();
+            }
+            
+            function dragged(event, d) {
+                // Update node position directly
+                d.x = event.x;
+                d.y = event.y;
+                
+                // Fix position while dragging
+                d.fx = event.x;
+                d.fy = event.y;
+                
+                // Update this nodes position
+                d3.select(this).attr("transform", `translate(${d.x}, ${d.y})`);
+                
+                // Update links
+                updateLinks();
+            }
+            
+            function dragended(event, d) {
+                // Keep position fixed after drag
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            // Search functionality
+            document.getElementById("searchInput").addEventListener("input", function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                if (searchTerm === "") {
+                    node.style("opacity", 1);
+                    link.style("opacity", 1);
+                    return;
+                }
+                
+                node.style("opacity", d => {
+                    return d.name.toLowerCase().includes(searchTerm) ? 1 : 0.2;
+                });
+                
+                link.style("opacity", 0.2);
+            });
+            
+            // Add auto-arrange functionality
+            document.getElementById("applyForceLayoutBtn").addEventListener("click", function() {
+                // Clear fixed positions
+                visibleNodes.forEach(node => {
+                    node.fx = null;
+                    node.fy = null;
+                });
+                
+                // Reset simulation with stronger forces
+                simulation.alpha(1).restart();
+                simulation.force("link").strength(0.5);
+                simulation.force("charge").strength(-300);
+                simulation.force("center").strength(0.1);
+                
+                // Update on tick
+                simulation.on("tick", () => {
+                    node.attr("transform", d => `translate(${d.x}, ${d.y})`);
+                    updateLinks();
+                });
+                
+                // After some iterations, stop and fix positions
+                setTimeout(() => {
+                    simulation.stop();
+                    // Fix all node positions
+                    visibleNodes.forEach(node => {
+                        node.fx = node.x;
+                        node.fy = node.y;
+                    });
+                }, 2000);
+            });
+            
+            // Circle layout
+            document.getElementById("applyCircleLayoutBtn").addEventListener("click", function() {
+                const radius = Math.min(width, height) / 3;
+                const centerX = width / 2;
+                const centerY = height / 2;
+                
+                visibleNodes.forEach((node, i) => {
+                    const angle = (i / visibleNodes.length) * 2 * Math.PI;
+                    node.x = centerX + radius * Math.cos(angle);
+                    node.y = centerY + radius * Math.sin(angle);
+                    node.fx = node.x;
+                    node.fy = node.y;
+                    
+                    d3.select(node.el)
+                        .transition()
+                        .duration(800)
+                        .attr("transform", `translate(${node.x}, ${node.y})`);
+                });
+                
+                // Update node positions with animation
+                node.transition()
+                    .duration(800)
+                    .attr("transform", d => `translate(${d.x}, ${d.y})`);
+                
+                // Update links after animation
+                setTimeout(() => {
+                    updateLinks();
+                }, 800);
+            });
+            
+            // Hierarchical layout
+            document.getElementById("applyHierarchicalLayoutBtn").addEventListener("click", function() {
+                // Find root nodes (those that are not targets of any link)
+                const allTargets = new Set(graph.links.map(link => 
+                    typeof link.target === 'object' ? link.target.id : link.target
+                ));
+                
+                const rootNodeIds = visibleNodes
+                    .filter(node => !allTargets.has(node.id))
+                    .map(node => node.id);
+                
+                // If no root nodes, use isolated components or just the first node
+                if (rootNodeIds.length === 0) {
+                    if (isolatedComponents.length > 0) {
+                        rootNodeIds.push(isolatedComponents[0].id);
+                    } else {
+                        rootNodeIds.push(visibleNodes[0].id);
+                    }
+                }
+                
+                // Build hierarchical levels
+                const levels = buildHierarchicalLevels(rootNodeIds);
+                
+                // Position nodes by level
+                const levelHeight = height / (levels.length + 1);
+                
+                levels.forEach((level, i) => {
+                    const levelY = levelHeight * (i + 1);
+                    const nodeWidth = width / (level.length + 1);
+                    
+                    level.forEach((nodeId, j) => {
+                        const node = visibleNodes.find(n => n.id === nodeId);
+                        if (node) {
+                            node.x = nodeWidth * (j + 1);
+                            node.y = levelY;
+                            node.fx = node.x;
+                            node.fy = node.y;
+                        }
+                    });
+                });
+                
+                // Position any remaining nodes at the bottom
+                const placedNodes = new Set();
+                levels.forEach(level => level.forEach(id => placedNodes.add(id)));
+                
+                const unplacedNodes = visibleNodes.filter(node => !placedNodes.has(node.id));
+                if (unplacedNodes.length > 0) {
+                    const bottomY = levelHeight * (levels.length + 1);
+                    const nodeWidth = width / (unplacedNodes.length + 1);
+                    
+                    unplacedNodes.forEach((node, i) => {
+                        node.x = nodeWidth * (i + 1);
+                        node.y = bottomY;
+                        node.fx = node.x;
+                        node.fy = node.y;
+                    });
+                }
+                
+                // Update node positions with animation
+                node.transition()
+                    .duration(800)
+                    .attr("transform", d => `translate(${d.x}, ${d.y})`);
+                
+                // Update links after animation
+                setTimeout(() => {
+                    updateLinks();
+                }, 800);
+            });
+            
+            // Helper function to build hierarchical levels
+            function buildHierarchicalLevels(rootNodeIds) {
+                const levels = [rootNodeIds];
+                const visited = new Set(rootNodeIds);
+                let currentLevel = rootNodeIds;
+                let hasNewNodes = true;
+                
+                while (hasNewNodes) {
+                    const nextLevel = [];
+                    hasNewNodes = false;
+                    
+                    for (const nodeId of currentLevel) {
+                        // Find all targets from this node
+                        const targets = graph.links
+                            .filter(link => {
+                                const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+                                return sourceId === nodeId;
+                            })
+                            .map(link => typeof link.target === 'object' ? link.target.id : link.target);
+                        
+                        // Add unvisited targets to next level
+                        for (const targetId of targets) {
+                            if (!visited.has(targetId)) {
+                                nextLevel.push(targetId);
+                                visited.add(targetId);
+                                hasNewNodes = true;
+                            }
+                        }
+                    }
+                    
+                    if (nextLevel.length > 0) {
+                        levels.push(nextLevel);
+                        currentLevel = nextLevel;
+                    }
+                }
+                
+                return levels;
+            }
+            
+            // Store DOM element reference for each node
+            node.each(function(d) {
+                d.el = this;
+            });
+
+
+            // Apply Hierarchical Layout by default
+			document.getElementById("applyHierarchicalLayoutBtn").click();
+            
+            return { svg, link, node, updateLinks };
+        }
+        
+        function positionNodesInitially(nodes, width, height) {
+            // Only set initial positions for nodes that dont have positions yet
+            nodes.forEach((node, i) => {
+                if (typeof node.x === 'undefined' || typeof node.y === 'undefined') {
+                    // Distribute nodes in a grid pattern
+                    const cols = Math.ceil(Math.sqrt(nodes.length));
+                    const rows = Math.ceil(nodes.length / cols);
+                    
+                    const colWidth = width / cols;
+                    const rowHeight = height / rows;
+                    
+                    const col = i % cols;
+                    const row = Math.floor(i / cols);
+                    
+                    node.x = colWidth * (col + 0.5);
+                    node.y = rowHeight * (row + 0.5);
+                }
+            });
+        }
+        
+        function showComponentDetails(component) {
+            const modal = document.getElementById("componentModal");
+            const modalTitle = document.getElementById("modalTitle");
+            const modalContent = document.getElementById("modalContent");
+            
+            modalTitle.textContent = component.name;
+            
+            // Find incoming and outgoing references
+            const incoming = graph.links.filter(link => {
+                const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+                return targetId === component.id;
+            });
+            
+            const outgoing = graph.links.filter(link => {
+                const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+                return sourceId === component.id;
+            });
+            
+            const incomingNames = incoming.map(link => {
+                const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+                const sourceNode = graph.nodes.find(n => n.id === sourceId);
+                return sourceNode ? sourceNode.name : 'Unknown';
+            });
+            
+            const outgoingNames = outgoing.map(link => {
+                const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+                const targetNode = graph.nodes.find(n => n.id === targetId);
+                return targetNode ? targetNode.name : 'Unknown';
+            });
+            
+            modalContent.innerHTML = `
+                <p><strong>Type:</strong> ${component.type}</p>
+                <p><strong>Path:</strong> ${component.path}</p>
+                <p><strong>References From:</strong> ${incomingNames.length ? incomingNames.join(", ") : "None"}</p>
+                <p><strong>References To:</strong> ${outgoingNames.length ? outgoingNames.join(", ") : "None"}</p>
+            `;
+            
+            modal.style.display = "block";
+        }
+        
+        // Event listeners
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize graph with sample data
+            initializeGraph();
+            const diagramElements = initializeDiagram();
+            
+            // Reset view button
+            document.getElementById("resetBtn").addEventListener("click", function() {
+                // Remove fixed positions
+                graph.nodes.forEach(node => {
+                    node.x = undefined;
+                    node.y = undefined;
+                    node.fx = undefined;
+                    node.fy = undefined;
+                });
+                initializeDiagram();
+            });
+			
+			
+			// Apply Hierarchical Layout by default
+			document.getElementById("applyHierarchicalLayoutBtn").click();
+            
+            // Toggle isolated components
+            document.getElementById("toggleIsolatedBtn").addEventListener("click", function() {
+                showIsolated = !showIsolated;
+                initializeDiagram();
+            });
+            
+            // Modal close button
+            document.querySelector(".close").addEventListener("click", function() {
+                document.getElementById("componentModal").style.display = "none";
+            });
+            
+            // Click outside to close modal
+            window.addEventListener("click", function(event) {
+                const modal = document.getElementById("componentModal");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+            
+            // Import button trigger
+            document.getElementById("importBtnTrigger").addEventListener("click", function() {
+                document.getElementById("fileInput").click();
+            });
+            
+            // Import data
+            document.getElementById("fileInput").addEventListener("change", function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        sampleData = JSON.parse(e.target.result);
+                        initializeGraph();
+                        initializeDiagram();
+                        alert("Data imported successfully!");
+                    } catch (error) {
+                        alert("Error importing data: " + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            });
+            
+            // Export data
+            document.getElementById("exportDataBtn").addEventListener("click", function() {
+                const dataStr = JSON.stringify(sampleData, null, 2);
+                const blob = new Blob([dataStr], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "boomi-component-data.json";
+                link.click();
+                
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
+</body>
+</html>

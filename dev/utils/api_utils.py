@@ -137,6 +137,38 @@ def build_query_body(*query_groups: dict, query_operator: str = "and") -> str:
     )
 
 
+def generate_bulk_get_requests(id_list, max_ids_per_request=100):
+    """
+    Generate bulk GET requests from a list of IDs.
+    This function takes a list of IDs and splits it into chunks, each containing
+    a maximum number of IDs specified by `max_ids_per_request`. It then formats
+    these chunks into a list of bulk GET request dictionaries.
+    Parameters
+    ----------
+    id_list : list
+        A list of IDs to be included in the bulk GET requests.
+    max_ids_per_request : int, optional
+        The maximum number of IDs to include in each request chunk (default is 100).
+    Returns
+    -------
+    list
+        A list of dictionaries, each representing a bulk GET request with a chunk of IDs.
+    """
+
+    id_list = list(set(id_list))
+
+    bulk_get_requests = []
+
+    for i in range(0, len(id_list), max_ids_per_request):
+        request_chunk = {
+            "type": "GET",
+            "request": [{"id": id_} for id_ in id_list[i : i + max_ids_per_request]],
+        }
+        bulk_get_requests.append(request_chunk)
+
+    return bulk_get_requests
+
+
 def handle_response(response: requests.Response) -> dict:
     """
     Handle the response from an HTTP request.
@@ -159,13 +191,31 @@ def handle_response(response: requests.Response) -> dict:
     if response.status_code // 100 == 2:
         return response.json()
     else:
+        error_message = None
+
+        # Try parsing as JSON first
         try:
-            root = ET.fromstring(response.text)
-            error_message = root.find(".//Data").text
+            error_data = response.json()
+            if "message" in error_data:
+                error_message = error_data["message"]
+        except json.JSONDecodeError:
+            pass
+
+        # Try parsing as XML if JSON parsing failed
+        if error_message is None:
+            try:
+                root = ET.fromstring(response.text)
+                error_message = root.find(".//Data").text
+            except ET.ParseError:
+                pass
+
+        # Print appropriate error message
+        if error_message:
             print(f"Error: {response.status_code} - {response.reason}: {error_message}")
-        except ET.ParseError:
+        else:
             print(f"Error: {response.status_code} - {response.reason}")
-            print(f"Failed to parse error message from response XML :{response.text}")
+            print(f"Failed to parse error message from response: {response.text}")
+
         sys.exit(1)
 
 

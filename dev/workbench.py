@@ -1,3 +1,8 @@
+import os
+import json
+from utils.temp_utils import write_to_debug_log
+from utils.component_store import ComponentStore
+
 from utils.utils import fetch_env_variables, init_runtime_vars
 
 from folder_parsing.folder_parsing import (
@@ -8,9 +13,6 @@ from component_parsing.component_parsing import (
     get_components_in_folder_tree,
     get_parent_component_references,
 )
-
-
-from utils.component_store import ComponentStore
 
 # TODO - Remove temp_utils
 from utils.temp_utils import (
@@ -48,23 +50,14 @@ def main():
     # Get components in folder tree
     component_refs = get_components_in_folder_tree(runtime_vars, folder_tree)
 
-    # Initialize component store
     component_store = ComponentStore(component_refs)
 
-    # Write components to debug log
-    # TODO - Remove this logging
     write_to_debug_log(
-        json.dumps(component_refs, indent=4),
-        debug_log_filename="component_json",
+        json.dumps(component_store.get_all_components(), indent=4),
+        debug_log_filename="component_store",
         debug_log_suffix=".json",
-    )
-
-    # Get parent component references
-    parent_component_refs = get_parent_component_references(
-        runtime_vars, component_store.get_all_components()
     )
 
 
 if __name__ == "__main__":
-
     main()

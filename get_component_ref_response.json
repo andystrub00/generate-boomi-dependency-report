@@ -1,0 +1,1959 @@
+{
+	"@type": "BulkResult",
+	"response": [
+		{
+			"@type": "BulkResponse",
+			"Result": {
+				"@type": "ComponentReference",
+				"references": [
+					{
+						"@type": "references",
+						"parentComponentId": "7a4e2907-d870-45ad-a02f-b3a1fa435be6",
+						"parentVersion": 28,
+						"componentId": "87c0d8f3-68e1-436a-954b-ac751f7fd05c",
+						"type": "DEPENDENT"
+					}
+				]
+			},
+			"statusCode": 200
+		},
+		{
+			"@type": "BulkResponse",
+			"Result": {
+				"@type": "ComponentReference",
+				"references": [
+					{
+						"@type": "references",
+						"parentComponentId": "94ca7b78-816c-4764-b979-fb4a78e9edcb",
+						"parentVersion": 6,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bcfa1c71-447e-41cd-8c1d-edf832eb4216",
+						"parentVersion": 8,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "0c4d7bad-ffec-4c44-8e40-b10b7bc8c3ef",
+						"parentVersion": 3,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "03903e6d-6792-4989-9b8d-49ce4a1de957",
+						"parentVersion": 4,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "28abf7d8-0418-4613-a2d6-61a03182aca6",
+						"parentVersion": 8,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "265baccf-07ce-40ab-9552-043cc24f8b34",
+						"parentVersion": 15,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "f1d8988e-c119-4505-afc4-be74ea2d897a",
+						"parentVersion": 5,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4ddd6373-1dbf-41d0-8e61-35839beca85a",
+						"parentVersion": 4,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "31f53b0b-5513-495e-ab56-ec4c782880b8",
+						"parentVersion": 34,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "90579806-f7da-4742-8f4c-44380858cbb6",
+						"parentVersion": 21,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "7b2011ec-b125-47f9-881b-4245780c2cf0",
+						"parentVersion": 80,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "edd0a19e-d298-4d02-ae0a-d06318b89c26",
+						"parentVersion": 2,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ffc2e89b-42ee-4e4f-9946-9f2d9ec69c9c",
+						"parentVersion": 38,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "331724f3-da32-4eb8-b9bf-aa78408a6579",
+						"parentVersion": 11,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "1bc5b091-b1ea-443f-86cb-ddef0a75e984",
+						"parentVersion": 5,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "0f40bd8d-3065-4032-96e4-b1a62037f9a1",
+						"parentVersion": 32,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "95821dcc-c540-4b50-b93b-5b118aaa43ed",
+						"parentVersion": 37,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ff34a9d9-47d5-42ba-8637-3d2c97314d7b",
+						"parentVersion": 52,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "af997fe1-5d12-499f-b009-5f590ccc8bd5",
+						"parentVersion": 23,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "08abf36f-58f1-4c8c-99aa-4ea82979954f",
+						"parentVersion": 19,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "a25aa91e-4acc-4fa9-a463-7826e364e8ba",
+						"parentVersion": 1,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6165a1b3-704d-442c-8752-1017c9a10742",
+						"parentVersion": 7,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "cb0c1b18-7f2b-418d-b101-ca9589ce2d8e",
+						"parentVersion": 7,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "41c72533-b407-4da0-8a3a-86ff9e1ab93d",
+						"parentVersion": 15,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "77b41377-77b3-42f1-a5f3-8ab57ba4fff4",
+						"parentVersion": 45,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6b1b9d46-6f9b-43c9-a272-db7827b5b124",
+						"parentVersion": 1,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d5e5c41b-ecab-4b6a-8d6e-6985875db7d6",
+						"parentVersion": 9,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "949bd1f6-2b6f-4651-b051-b1321c9b9595",
+						"parentVersion": 41,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b7d41207-e313-4dbf-830b-fbc89349a287",
+						"parentVersion": 11,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9fbbcacd-80d8-433b-a587-965b19cf71ba",
+						"parentVersion": 12,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d3b39045-1d11-448c-87f7-d7e787a7c574",
+						"parentVersion": 23,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3b19af81-03c5-449a-8b72-231992849064",
+						"parentVersion": 6,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "fde9b2f9-2f27-4ea9-bc56-c5fd3561f9b3",
+						"parentVersion": 11,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ccc40148-796f-44ee-b4ef-059b9e7e372f",
+						"parentVersion": 35,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "a78c341c-4159-40c4-aeb9-9140f3c6f4e1",
+						"parentVersion": 10,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9f328c0b-f929-4a79-8451-e12f091af049",
+						"parentVersion": 59,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "be3360f5-6657-4e26-9c97-caf88a6e2841",
+						"parentVersion": 2,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b36fda30-badf-4a7b-860d-6ed34c32988c",
+						"parentVersion": 6,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "96861987-3e7b-4f8f-9816-1fa299d533f6",
+						"parentVersion": 12,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6d6259e2-74d4-4510-948f-71575f8dcc31",
+						"parentVersion": 7,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "5ea93bdb-d13d-4209-868a-d21debe61362",
+						"parentVersion": 21,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "392101d6-872b-4a9c-ba3b-8cea20ec3e2b",
+						"parentVersion": 43,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "507ccc6e-1d00-4db4-a751-b7cc48225f2c",
+						"parentVersion": 118,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b35143de-d151-4222-ae9e-88bd06b42e79",
+						"parentVersion": 21,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "133fdedb-2b74-4a4e-a271-480b1656ae69",
+						"parentVersion": 76,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c447db66-8ac4-4552-90f1-5a12a183ed33",
+						"parentVersion": 58,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4bb5e550-ef8e-47df-a1a5-e8adedccf6d1",
+						"parentVersion": 15,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "25c6fc38-e3dc-45de-ac79-046a39a73859",
+						"parentVersion": 4,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "007cda62-6b8b-4c96-aaa1-70eaf2dbba9a",
+						"parentVersion": 5,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "15994c83-5a4a-44e5-8d78-9719eb0c0f15",
+						"parentVersion": 26,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "dcde50b2-a3da-4ad3-b216-ff5adb6bc530",
+						"parentVersion": 88,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd",
+						"parentVersion": 17,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "5011b957-3125-42d8-b6ef-6f35310b1eb1",
+						"parentVersion": 4,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6273fdac-0f1a-4a7d-991e-def3d19e19c0",
+						"parentVersion": 8,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "24e43833-df80-43b6-a23a-2a69d824037f",
+						"parentVersion": 83,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bf5fdb04-5717-412c-8f08-c356713bdef9",
+						"parentVersion": 61,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b6fe959c-28cb-4c7a-983c-4336f1ae759a",
+						"parentVersion": 67,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b8212b6b-14a7-4936-851b-cbf51231f0c0",
+						"parentVersion": 13,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "dacb53c5-e3fe-4535-8289-f41709257137",
+						"parentVersion": 52,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "94303486-397e-4062-8bb6-eb756eb290e6",
+						"parentVersion": 63,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bcf6e9a2-d006-4db0-a2bb-16047f884ad5",
+						"parentVersion": 17,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "2d6d3aa3-8b4c-4603-9bb5-dd3f48fde5c7",
+						"parentVersion": 64,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "43db6c64-a6ad-4b2d-8814-8e533c9fa50b",
+						"parentVersion": 264,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "1ac9f2ad-ba51-4c2d-a791-fa1a704dde02",
+						"parentVersion": 20,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "262dba7a-249e-44e4-9d4c-936a34dc89b0",
+						"parentVersion": 289,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b8b51523-8c44-4e67-a1b8-82a310843dcb",
+						"parentVersion": 4,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8dfbee27-b90b-41ae-9f9d-4f082d17caaf",
+						"parentVersion": 41,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "e23701f5-a26d-4cc9-b454-02d9bd1056db",
+						"parentVersion": 2,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c3e3229c-40c6-45b9-861f-196b126351bc",
+						"parentVersion": 16,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "21c3be90-df33-4eb1-a9e4-f9277caa543d",
+						"parentVersion": 6,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "2876510c-3578-4ade-91d8-574debe61d34",
+						"parentVersion": 2,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9d0cb4f1-52a7-4a15-aafe-686e9240c399",
+						"parentVersion": 8,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bc2cce28-ca3c-4f7d-8de5-aeaa9c8742ed",
+						"parentVersion": 19,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "fa545ea0-fc3f-44a6-a539-a57f8124bfd6",
+						"parentVersion": 81,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9985569c-27d8-4359-9078-1fb7fca75090",
+						"parentVersion": 9,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "fd54458d-d182-4319-b7cd-f13aaf66f0a9",
+						"parentVersion": 5,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "2a04bd67-fd75-459e-aea5-966d2096f891",
+						"parentVersion": 5,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d6bdf643-ac66-4cc0-8aee-911ed98362f1",
+						"parentVersion": 25,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "822ecd9f-8b76-4243-ac46-9b1341a03fdd",
+						"parentVersion": 23,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "35d8b92d-6e2e-4756-9a3c-0fa856497663",
+						"parentVersion": 60,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "08a4b150-1b11-44b7-b1aa-f6c79a651d33",
+						"parentVersion": 11,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b19d5c99-d713-4155-a345-14fa0c7d6a41",
+						"parentVersion": 79,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3c4c5231-b111-474a-aec9-6177ce6d60e4",
+						"parentVersion": 91,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "57f231c0-ae9f-4209-84ce-2c468e19e909",
+						"parentVersion": 30,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8e7d0610-3f9c-44c8-9af7-6ba904b5ca02",
+						"parentVersion": 25,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6b6b8f5a-2a4c-43f1-9883-298c1709ec91",
+						"parentVersion": 194,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bb911148-ae10-4e40-8e10-6e48f4fb3b94",
+						"parentVersion": 19,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "91f140ff-a4b7-4df5-b769-0adccfaaad68",
+						"parentVersion": 139,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "e7d7fc7f-6502-4628-8f33-6608672d6826",
+						"parentVersion": 201,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9090f329-819e-4c58-b7b8-ee03bd488a69",
+						"parentVersion": 20,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "7bacef67-8180-4fd0-ae63-382050b779ca",
+						"parentVersion": 34,
+						"componentId": "08067b65-bc76-4c61-bd2d-1f86adee8c6d",
+						"type": "DEPENDENT"
+					}
+				]
+			},
+			"statusCode": 200
+		},
+		{
+			"@type": "BulkResponse",
+			"Result": {
+				"@type": "ComponentReference",
+				"references": [
+					{
+						"@type": "references",
+						"parentComponentId": "85471635-b0e7-49de-af64-bed374b0227c",
+						"parentVersion": 7,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b36fda30-badf-4a7b-860d-6ed34c32988c",
+						"parentVersion": 6,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "96861987-3e7b-4f8f-9816-1fa299d533f6",
+						"parentVersion": 12,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6d6259e2-74d4-4510-948f-71575f8dcc31",
+						"parentVersion": 7,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "f5d7e4d9-fe78-44f7-8b6f-06fafc4e8597",
+						"parentVersion": 5,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "a3543ecc-987c-4713-b9f5-3ea29246ee2e",
+						"parentVersion": 34,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ef2aa0aa-4f9a-4ab7-957e-8cb61732217a",
+						"parentVersion": 34,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "507ccc6e-1d00-4db4-a751-b7cc48225f2c",
+						"parentVersion": 118,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b35143de-d151-4222-ae9e-88bd06b42e79",
+						"parentVersion": 21,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "133fdedb-2b74-4a4e-a271-480b1656ae69",
+						"parentVersion": 76,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09",
+						"parentVersion": 29,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "70060750-bb42-43f8-a55d-ab2222525093",
+						"parentVersion": 6,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "91d72778-81ec-4ac0-98e2-cc7a99593c4b",
+						"parentVersion": 23,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8e3a1b4d-816e-4ede-a2a3-a2ac414812ab",
+						"parentVersion": 17,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "185e80b5-7b3b-4a91-a45c-4841a23c8fbc",
+						"parentVersion": 4,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd",
+						"parentVersion": 17,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6f94e3d2-9579-4dfa-a165-08a0887c44a9",
+						"parentVersion": 5,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "16ea5d09-a34e-4141-b3df-489ea0da3d5b",
+						"parentVersion": 155,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "94fdcf3d-6cbb-4829-b895-7c76fec92dac",
+						"parentVersion": 5,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ee1b0088-5d2f-4830-be28-dd197d57e6e0",
+						"parentVersion": 4,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "178af759-8503-474e-ae4b-df1eddd418ca",
+						"parentVersion": 10,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "af4a7217-1530-440f-81ee-8a67a201046f",
+						"parentVersion": 497,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b19d5c99-d713-4155-a345-14fa0c7d6a41",
+						"parentVersion": 79,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3c4c5231-b111-474a-aec9-6177ce6d60e4",
+						"parentVersion": 91,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "728b51be-4739-42f3-adbd-7733ce605d37",
+						"parentVersion": 35,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "514ab4ce-9725-41e9-b5db-667c85bbf840",
+						"parentVersion": 7,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8b5f224e-bb0c-4d85-a1df-b0527dc95296",
+						"parentVersion": 90,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "eb4abf37-9bf5-45d1-b98f-744a3cfb3a0e",
+						"parentVersion": 62,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8e7d0610-3f9c-44c8-9af7-6ba904b5ca02",
+						"parentVersion": 25,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6b6b8f5a-2a4c-43f1-9883-298c1709ec91",
+						"parentVersion": 194,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "f041956f-60cf-4943-b5d2-815dbd50aca1",
+						"parentVersion": 32,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9090f329-819e-4c58-b7b8-ee03bd488a69",
+						"parentVersion": 20,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "7bacef67-8180-4fd0-ae63-382050b779ca",
+						"parentVersion": 34,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "288bb1b8-fb89-4ce2-8717-de0516586433",
+						"parentVersion": 111,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "162c4dfd-d465-4431-a4a0-7a74d2d6e5ce",
+						"parentVersion": 294,
+						"componentId": "7dfbe045-b021-4912-b1bf-7be8dd477e13",
+						"type": "DEPENDENT"
+					}
+				]
+			},
+			"statusCode": 200
+		},
+		{
+			"@type": "BulkResponse",
+			"Result": {
+				"@type": "ComponentReference",
+				"references": [
+					{
+						"@type": "references",
+						"parentComponentId": "d180a689-d860-47bd-a34a-31ebbe2e1368",
+						"parentVersion": 5,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "67fbf9ea-9500-4f04-b46d-11fadfdc5443",
+						"parentVersion": 24,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6e15db94-61d2-4df9-b9b4-5df8b470b52c",
+						"parentVersion": 14,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "aee25204-fee9-40a3-b61e-90d441ebfc98",
+						"parentVersion": 13,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "decd6fc4-4994-4b27-ac7f-b9550dd8a8f7",
+						"parentVersion": 57,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "5bbacb5c-f836-4b4e-8ccd-d9dcc639e0ef",
+						"parentVersion": 139,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "1c76a5f4-e1d0-4980-9c6f-4f04aabc7733",
+						"parentVersion": 8,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "e7139a0a-d0d5-4501-9a40-a6f9541a8335",
+						"parentVersion": 86,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "f1140bc8-d3f6-4b06-a7c0-092e3b935f39",
+						"parentVersion": 58,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ffeaf16a-5437-4bad-a62a-51a57e4a9bd7",
+						"parentVersion": 90,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "befc5147-d32e-46c5-a976-8620caa50cd2",
+						"parentVersion": 3,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "0ae0ede9-c9cd-49ec-9dd4-d15913547a02",
+						"parentVersion": 143,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "77b41377-77b3-42f1-a5f3-8ab57ba4fff4",
+						"parentVersion": 45,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3b7c4b75-180c-4ffc-a1e5-c9ba4a9fa71b",
+						"parentVersion": 68,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "74663b45-ccc1-45f4-bb46-41409aef29bd",
+						"parentVersion": 38,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d52f4f3c-4b28-4020-a05b-3dbf1e6183da",
+						"parentVersion": 26,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "a4f287f8-2502-40bb-880c-a6ad01b5fe09",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c165b4c5-b86c-4ad9-bec7-f9b7910b36fa",
+						"parentVersion": 24,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "24493e16-1f32-4dd0-8550-30280389d2be",
+						"parentVersion": 19,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3383fe36-bb7b-499e-8e6e-6c308c60ec30",
+						"parentVersion": 17,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ddd7687e-cf34-4829-91ef-110f8af97c52",
+						"parentVersion": 13,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9f328c0b-f929-4a79-8451-e12f091af049",
+						"parentVersion": 59,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6b523f2b-f106-4ec0-a124-7c01a1145b1d",
+						"parentVersion": 108,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ec686899-2fc3-4f4c-a1d9-85151c5d3d4f",
+						"parentVersion": 9,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d9b1bf00-9b7c-4c2e-a06c-6c773382df00",
+						"parentVersion": 10,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "7b161b49-88cc-43b2-a4fd-0a338abb5ba3",
+						"parentVersion": 11,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "64dc47eb-ec19-4f16-add7-4e9f01903c3f",
+						"parentVersion": 16,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "1fc56b8e-9351-454f-934b-dfe34d887d27",
+						"parentVersion": 131,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3cb61e70-c713-4466-8141-a46f6437f6e8",
+						"parentVersion": 44,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b92188fd-8aab-4c0c-a637-93161cb3ddb7",
+						"parentVersion": 23,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b36fda30-badf-4a7b-860d-6ed34c32988c",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "96861987-3e7b-4f8f-9816-1fa299d533f6",
+						"parentVersion": 12,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6d6259e2-74d4-4510-948f-71575f8dcc31",
+						"parentVersion": 7,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "a3543ecc-987c-4713-b9f5-3ea29246ee2e",
+						"parentVersion": 34,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6e2eddb9-7045-4064-8c4d-f577d5b1c295",
+						"parentVersion": 65,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "392101d6-872b-4a9c-ba3b-8cea20ec3e2b",
+						"parentVersion": 43,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "acc6a4a1-28a8-4a3b-8836-6b345ffe6f5d",
+						"parentVersion": 22,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ef2aa0aa-4f9a-4ab7-957e-8cb61732217a",
+						"parentVersion": 34,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "507ccc6e-1d00-4db4-a751-b7cc48225f2c",
+						"parentVersion": 118,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4b23b57d-7eeb-4c59-8e70-34e31a98f4b2",
+						"parentVersion": 4,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9e7a83eb-7ad6-45ed-b5bd-2ca5395152a8",
+						"parentVersion": 22,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8698d10d-abba-4ab2-a96b-4f3c1d46d83d",
+						"parentVersion": 11,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b35143de-d151-4222-ae9e-88bd06b42e79",
+						"parentVersion": 21,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "133fdedb-2b74-4a4e-a271-480b1656ae69",
+						"parentVersion": 76,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8ebc7bad-24cb-4817-81a4-ba1b67a4ff09",
+						"parentVersion": 29,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c447db66-8ac4-4552-90f1-5a12a183ed33",
+						"parentVersion": 58,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "e775af20-6633-462d-862d-38b36e8799e6",
+						"parentVersion": 25,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9f7f2e40-d56a-4d9e-a905-af2836c84cc8",
+						"parentVersion": 62,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "f0af27e1-6c2b-4aba-b9d0-ae36fd1e906a",
+						"parentVersion": 3,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "25c6fc38-e3dc-45de-ac79-046a39a73859",
+						"parentVersion": 4,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "007cda62-6b8b-4c96-aaa1-70eaf2dbba9a",
+						"parentVersion": 5,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8e3a1b4d-816e-4ede-a2a3-a2ac414812ab",
+						"parentVersion": 17,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "15994c83-5a4a-44e5-8d78-9719eb0c0f15",
+						"parentVersion": 26,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "dcde50b2-a3da-4ad3-b216-ff5adb6bc530",
+						"parentVersion": 88,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "1efca273-f5b5-4817-a2f7-f66f0356b8f4",
+						"parentVersion": 12,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c0c2b908-0bb1-4b5f-8289-ea30b3f772bd",
+						"parentVersion": 17,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "5011b957-3125-42d8-b6ef-6f35310b1eb1",
+						"parentVersion": 4,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6273fdac-0f1a-4a7d-991e-def3d19e19c0",
+						"parentVersion": 8,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4942d511-c1cc-4a01-b3af-bd8c61dcd111",
+						"parentVersion": 20,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9be68447-f3dc-41e5-8cf3-83df95821678",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "24e43833-df80-43b6-a23a-2a69d824037f",
+						"parentVersion": 83,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bf5fdb04-5717-412c-8f08-c356713bdef9",
+						"parentVersion": 61,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "244fd14d-0eb2-495d-b444-a4e744e54ab8",
+						"parentVersion": 8,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c01bad43-f567-4fc8-869d-aba719f4dc7a",
+						"parentVersion": 7,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b6fe959c-28cb-4c7a-983c-4336f1ae759a",
+						"parentVersion": 67,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "dacb53c5-e3fe-4535-8289-f41709257137",
+						"parentVersion": 52,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "94303486-397e-4062-8bb6-eb756eb290e6",
+						"parentVersion": 63,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bcf6e9a2-d006-4db0-a2bb-16047f884ad5",
+						"parentVersion": 17,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d2579f8d-cd17-4a24-b7e1-131e4dfc8f6a",
+						"parentVersion": 4,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d7444b9e-fb20-40ce-a28e-4f775f2b5c59",
+						"parentVersion": 17,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9296027a-f27a-4921-9b1c-b3d7ff628136",
+						"parentVersion": 4,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "90f7dd43-5c01-4a61-a6b7-99a70d98e5a6",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4cbcda75-7937-41d0-b23a-e7d6c68bd203",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4dde725c-e4ef-4666-9f55-9a8828509b5a",
+						"parentVersion": 11,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "2d6d3aa3-8b4c-4603-9bb5-dd3f48fde5c7",
+						"parentVersion": 64,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "5014ee79-0639-4cb9-862e-8d4efaa77643",
+						"parentVersion": 12,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "1f51d159-1e1e-45a4-a7a4-e9d10f6338d2",
+						"parentVersion": 9,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "43db6c64-a6ad-4b2d-8814-8e533c9fa50b",
+						"parentVersion": 264,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "32c4dfaa-2328-4c85-9b4a-c63dfda43e44",
+						"parentVersion": 43,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "e2bdf020-9dda-4363-80a3-6461e11d1bbd",
+						"parentVersion": 5,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9f73b85c-8ad8-4cd8-afb6-8511434a462d",
+						"parentVersion": 14,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "594e424d-5d77-40c2-999c-a9f4a3acd9eb",
+						"parentVersion": 14,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "45f2691f-a689-44aa-aca6-d6ccb746d447",
+						"parentVersion": 21,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "a7b98ca6-6319-4d47-9afb-0e416c638867",
+						"parentVersion": 11,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "1ac9f2ad-ba51-4c2d-a791-fa1a704dde02",
+						"parentVersion": 20,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "262dba7a-249e-44e4-9d4c-936a34dc89b0",
+						"parentVersion": 289,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8dfbee27-b90b-41ae-9f9d-4f082d17caaf",
+						"parentVersion": 41,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "c3e3229c-40c6-45b9-861f-196b126351bc",
+						"parentVersion": 16,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "21c3be90-df33-4eb1-a9e4-f9277caa543d",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "2876510c-3578-4ade-91d8-574debe61d34",
+						"parentVersion": 2,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9d0cb4f1-52a7-4a15-aafe-686e9240c399",
+						"parentVersion": 8,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bc2cce28-ca3c-4f7d-8de5-aeaa9c8742ed",
+						"parentVersion": 19,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "fa545ea0-fc3f-44a6-a539-a57f8124bfd6",
+						"parentVersion": 81,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9985569c-27d8-4359-9078-1fb7fca75090",
+						"parentVersion": 9,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "fd54458d-d182-4319-b7cd-f13aaf66f0a9",
+						"parentVersion": 5,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "16ea5d09-a34e-4141-b3df-489ea0da3d5b",
+						"parentVersion": 155,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "94fdcf3d-6cbb-4829-b895-7c76fec92dac",
+						"parentVersion": 5,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "090cb580-b0c5-4af0-a3d2-dd7c70c96b2e",
+						"parentVersion": 24,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "10efd390-152c-4515-942a-ba36c690c892",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "cf3eab59-48da-487d-b2a9-ff88f37df3e8",
+						"parentVersion": 7,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "60d6073c-f571-4129-8d15-8ead9e7dfd16",
+						"parentVersion": 21,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "e8a47778-66aa-4746-aa2b-23bdaab83857",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "55b190d5-6ee1-467e-b17b-0b1c11adaf8b",
+						"parentVersion": 18,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "fee6f0cd-51db-4ed3-b1ba-dfa1f6fdcb1a",
+						"parentVersion": 6,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "2a04bd67-fd75-459e-aea5-966d2096f891",
+						"parentVersion": 5,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "ee1b0088-5d2f-4830-be28-dd197d57e6e0",
+						"parentVersion": 4,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d6bdf643-ac66-4cc0-8aee-911ed98362f1",
+						"parentVersion": 25,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "178af759-8503-474e-ae4b-df1eddd418ca",
+						"parentVersion": 10,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "35d8b92d-6e2e-4756-9a3c-0fa856497663",
+						"parentVersion": 60,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "08a4b150-1b11-44b7-b1aa-f6c79a651d33",
+						"parentVersion": 11,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "5edc0297-7e93-4f53-bcc9-8f9628e98226",
+						"parentVersion": 191,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "663cbaa4-4f2b-46d3-8207-4a1af9f16756",
+						"parentVersion": 151,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "af4a7217-1530-440f-81ee-8a67a201046f",
+						"parentVersion": 497,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b19d5c99-d713-4155-a345-14fa0c7d6a41",
+						"parentVersion": 79,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3c4c5231-b111-474a-aec9-6177ce6d60e4",
+						"parentVersion": 91,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "66e54092-bbff-47ee-a6a3-2741dfe7fd8c",
+						"parentVersion": 45,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4cba6cb4-0ace-45a5-a993-27629cf83072",
+						"parentVersion": 62,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "2c53b1ed-c445-4175-ba14-1494097af693",
+						"parentVersion": 70,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "dbf9c8b6-8262-4861-a8ac-c5f68807e79d",
+						"parentVersion": 5,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "514ab4ce-9725-41e9-b5db-667c85bbf840",
+						"parentVersion": 7,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "49767a55-29cc-4d70-93e5-0b3b0c53e370",
+						"parentVersion": 4,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "46f7a0bd-5a84-4c92-b2be-d1d485cb0e39",
+						"parentVersion": 24,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "414ccda2-2689-4c7d-a57f-6b87ed0ba314",
+						"parentVersion": 60,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "79d63f44-4e48-4a8b-9312-cd283e65fc69",
+						"parentVersion": 131,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "57f231c0-ae9f-4209-84ce-2c468e19e909",
+						"parentVersion": 30,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "b25d889d-322d-4388-a612-c0c474fba59b",
+						"parentVersion": 15,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "42b200d1-6856-4de9-a86c-2a5dd09c5287",
+						"parentVersion": 33,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "118ced80-f2e1-47ce-a784-576923cc49f2",
+						"parentVersion": 578,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8b5f224e-bb0c-4d85-a1df-b0527dc95296",
+						"parentVersion": 90,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "eb4abf37-9bf5-45d1-b98f-744a3cfb3a0e",
+						"parentVersion": 62,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "8e7d0610-3f9c-44c8-9af7-6ba904b5ca02",
+						"parentVersion": 25,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "6b6b8f5a-2a4c-43f1-9883-298c1709ec91",
+						"parentVersion": 194,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "d4b00a91-9504-4073-9b8a-61e0bdcecdc5",
+						"parentVersion": 134,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "bb911148-ae10-4e40-8e10-6e48f4fb3b94",
+						"parentVersion": 19,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "412c3748-2e2e-4dae-9cfd-f270d649ca0a",
+						"parentVersion": 238,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "4fbbae4f-369f-4057-8f85-fdb3f0678e9b",
+						"parentVersion": 23,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "f041956f-60cf-4943-b5d2-815dbd50aca1",
+						"parentVersion": 32,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "582898a0-03ca-4892-8d32-a939deb1e548",
+						"parentVersion": 63,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9938f9d2-8868-487f-a461-f13b5e316c49",
+						"parentVersion": 209,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "3b3dd044-4725-46be-9ebc-311bd8a9e409",
+						"parentVersion": 30,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "91f140ff-a4b7-4df5-b769-0adccfaaad68",
+						"parentVersion": 139,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "e7d7fc7f-6502-4628-8f33-6608672d6826",
+						"parentVersion": 201,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "fd58fad6-857e-4c8e-a3d1-0d2a0a061536",
+						"parentVersion": 104,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "9090f329-819e-4c58-b7b8-ee03bd488a69",
+						"parentVersion": 20,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "7bacef67-8180-4fd0-ae63-382050b779ca",
+						"parentVersion": 34,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "288bb1b8-fb89-4ce2-8717-de0516586433",
+						"parentVersion": 111,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					},
+					{
+						"@type": "references",
+						"parentComponentId": "162c4dfd-d465-4431-a4a0-7a74d2d6e5ce",
+						"parentVersion": 294,
+						"componentId": "b534ada2-ec21-4e77-8b91-147827846443",
+						"type": "DEPENDENT"
+					}
+				]
+			},
+			"statusCode": 200
+		}
+	]
+}

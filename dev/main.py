@@ -7,6 +7,7 @@ from folder_parsing.folder_parsing import (
 from component_parsing.component_parsing import (
     get_components_in_folder_tree,
     get_parent_component_references,
+    get_child_component_references,
 )
 
 
@@ -51,17 +52,37 @@ def main():
     # Initialize component store
     component_store = ComponentStore(component_refs)
 
-    # Write components to debug log
-    # TODO - Remove this logging
-    write_to_debug_log(
-        json.dumps(component_refs, indent=4),
-        debug_log_filename="component_json",
-        debug_log_suffix=".json",
-    )
-
     # Get parent component references
     parent_component_refs = get_parent_component_references(
         runtime_vars, component_store.get_all_components()
+    )
+
+    # Update component store with parent component references
+    for child_component_id, parent_component_ids in parent_component_refs.items():
+        component_store.update_relationships(
+            child_component_id, parent_ids=parent_component_ids
+        )
+
+    # Write components to debug log
+    # TODO - Remove this logging
+    write_to_debug_log(
+        json.dumps(component_store.convert_sets_to_lists(), indent=4),
+        debug_log_filename="component_store_post_parent_refs",
+        debug_log_suffix=".json",
+    )
+
+    child_component_refs = get_child_component_references(
+        runtime_vars, component_store.get_all_components()
+    )
+
+    print(f"{child_component_refs=}")
+
+    # Write components to debug log
+    # TODO - Remove this logging
+    write_to_debug_log(
+        json.dumps(child_component_refs, indent=4),
+        debug_log_filename="child_component_refs",
+        debug_log_suffix=".json",
     )
 
 

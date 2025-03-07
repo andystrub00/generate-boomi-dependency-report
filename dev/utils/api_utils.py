@@ -211,10 +211,13 @@ def handle_response(response: requests.Response) -> dict:
 
         # Print appropriate error message
         if error_message:
-            print(f"Error: {response.status_code} - {response.reason}: {error_message}")
+            raise Exception(
+                f"Error: {response.status_code} - {response.reason}: {error_message}"
+            )
         else:
-            print(f"Error: {response.status_code} - {response.reason}")
+
             print(f"Failed to parse error message from response: {response.text}")
+            raise Exception(f"Error: {response.status_code} - {response.reason}")
 
         sys.exit(1)
 

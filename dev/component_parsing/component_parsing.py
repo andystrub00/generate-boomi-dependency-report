@@ -159,7 +159,76 @@ def parse_component_references_response(component_refs: list[dict]) -> dict:
                 parsed_component_refs.setdefault(child_component_id, set()).add(
                     parent_component_id
                 )
-        else:
-            parsed_component_refs.setdefault(bulk_response.get("id"), set())
 
     return parsed_component_refs
+
+
+def get_child_component_references(
+    runtime_vars: dict, parent_components: list[dict]
+) -> list:
+    """
+    Query child component references
+
+    Parameters
+    ----------
+    runtime_vars : dict
+        Dictionary of runtime variables.
+    parent_components : list[dict]
+        List of parent component objects.
+
+    Returns
+    -------
+    list
+        List of component reference objects
+    """
+
+    all_component_references = []
+
+    for parent_component in parent_components:
+
+        if parent_component.get("containsMetadata") == False:
+            continue
+
+        parent_component_id = parent_component.get("componentId")
+        parent_component_version = parent_component.get("version")
+
+        query_body = build_query_body(
+            {
+                "property": "parentComponentId",
+                "operator": "EQUALS",
+                "argument": parent_component_id,
+            },
+            {
+                "property": "parentVersion",
+                "operator": "EQUALS",
+                "argument": parent_component_version,
+            },
+        )
+
+        component_references_response = requests.post(
+            f"{runtime_vars['base_url']}/ComponentReference/query",
+            headers=runtime_vars["headers"],
+            auth=runtime_vars["auth_object"],
+            data=query_body,
+        )
+
+        component_references_response = handle_response(component_references_response)
+
+        while "queryToken" in component_references_response:
+            query_token = component_references_response["queryToken"]
+            more_component_refs = query_more_endpoint(
+                query_token, "ComponentReference", runtime_vars
+            )
+            component_references_response["result"].extend(
+                more_component_refs["result"]
+            )
+            if "queryToken" in more_component_refs:
+                component_references_response["queryToken"] = more_component_refs[
+                    "queryToken"
+                ]
+            else:
+                del component_references_response["queryToken"]
+
+        all_component_references.append(component_references_response.get("result", []))
+
+    return all_component_references

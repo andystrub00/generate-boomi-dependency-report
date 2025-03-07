@@ -1,63 +1,186 @@
-import os
-import json
-from utils.temp_utils import write_to_debug_log
-from utils.component_store import ComponentStore
-
-from utils.utils import fetch_env_variables, init_runtime_vars
-
-from folder_parsing.folder_parsing import (
-    query_initial_folder,
-    build_folder_tree,
-)
-from component_parsing.component_parsing import (
-    get_components_in_folder_tree,
-    get_parent_component_references,
-)
-
-# TODO - Remove temp_utils
-from utils.temp_utils import (
-    spoof_command_line_args,
-    write_to_debug_log,
-)
-import json
+from typing import Optional
 
 
-def main():
+class ComponentStore:
+    """
+    A storage class for managing components and their relationships efficiently.
 
-    # Fetch environment variables
-    env_vars = fetch_env_variables()
+    Parameters
+    ----------
+    component_list : list of dict
+        A list of component dictionaries to initialize the store.
+    """
 
-    # Get command line arguments
-    # TODO - switch back to normal command line parser
-    # args = parse_command_line_args()
-    args = spoof_command_line_args(
-        folder_name="TEST SUBFOLDER", folder_id=None, parse_subfolders=True
-    )
+    def __init__(self, component_list: list[dict]):
+        """
+        Initialize the ComponentStore with a list of components.
 
-    # Initialize dictionary of runtime variablesm including environment variables, command line arguments, and API variables
-    runtime_vars = init_runtime_vars(env_vars, args)
+        Parameters
+        ----------
+        component_list : list of dict
+            A list of components where each component is a dictionary.
+        """
+        self.components_by_id = {}
+        self.components_by_parent_id = {}  # parent_id -> list of component objects
+        self.components_by_child_id = {}  # child_id -> list of component objects
+        self.components_by_folder_id = {}  # folder_id -> list of component objects
 
-    # Query initial folder from Boomi
-    initial_folder_response = query_initial_folder(runtime_vars)
+        for component in component_list:
+            self.add_component(component)
 
-    # Add the parent folder name and ID to the runtime variables
-    runtime_vars["parent_folder_name"] = initial_folder_response["name"]
-    runtime_vars["parent_folder_id"] = initial_folder_response["id"]
+    def add_component(self, component: dict):
+        """
+        Add a new component to the store.
 
-    # Build folder tree from initial folder
-    folder_tree = build_folder_tree(runtime_vars, initial_folder_response)
+        Parameters
+        ----------
+        component : dict
+            A dictionary representing a component with at least a 'componentId' key.
+        """
+        component_id = component["componentId"]
+        component_copy = component.copy()
+        component_copy.setdefault("parentComponentIds", [])
+        component_copy.setdefault("childComponentIds", [])
 
-    # Get components in folder tree
-    component_refs = get_components_in_folder_tree(runtime_vars, folder_tree)
+        self.components_by_id[component_id] = component_copy
 
-    component_store = ComponentStore(component_refs)
+        folder_id = component.get("folderId")
+        if folder_id:
+            self.components_by_folder_id.setdefault(folder_id, []).append(
+                component_copy
+            )
 
-    write_to_debug_log(
-        json.dumps(component_store.get_all_components(), indent=4),
-        debug_log_filename="component_store",
-        debug_log_suffix=".json",
-    )
+    def update_relationships(
+        self,
+        component_id: str,
+        parent_ids: list[str] = None,
+        child_ids: list[str] = None,
+    ) -> bool:
+        """
+        Update a component's parent and child relationships.
 
+        Parameters
+        ----------
+        component_id : str
+            The ID of the component to update.
+        parent_ids : list of str, optional
+            A list of parent component IDs to associate.
+        child_ids : list of str, optional
+            A list of child component IDs to associate.
 
-if __name__ == "__main__":
-    main()
+        Returns
+        -------
+        bool
+            True if the update was successful, False if the component was not found.
+        """
+        if component_id not in self.components_by_id:
+            return False
+
+        component = self.components_by_id[component_id]
+
+        if parent_ids:
+            for parent_id in parent_ids:
+                if parent_id in component["parentComponentIds"]:
+                    continue
+                component["parentComponentIds"].append(parent_id)
+                self.components_by_parent_id.setdefault(parent_id, []).append(component)
+
+                if parent_id in self.components_by_id:
+                    parent = self.components_by_id[parent_id]
+                    if component_id not in parent["childComponentIds"]:
+                        parent["childComponentIds"].append(component_id)
+                        self.components_by_child_id.setdefault(component_id, []).append(
+                            parent
+                        )
+
+        if child_ids:
+            for child_id in child_ids:
+                if child_id in component["childComponentIds"]:
+                    continue
+                component["childComponentIds"].append(child_id)
+                self.components_by_child_id.setdefault(child_id, []).append(component)
+
+                if child_id in self.components_by_id:
+                    child = self.components_by_id[child_id]
+                    if component_id not in child["parentComponentIds"]:
+                        child["parentComponentIds"].append(component_id)
+                        self.components_by_parent_id.setdefault(
+                            component_id, []
+                        ).append(child)
+
+        return True
+
+    def get_by_id(self, component_id: str) -> Optional[dict]:
+        """
+        Retrieve a component by its ID.
+
+        Parameters
+        ----------
+        component_id : str
+            The ID of the component to retrieve.
+
+        Returns
+        -------
+        dict or None
+            The component dictionary if found, otherwise None.
+        """
+        return self.components_by_id.get(component_id)
+
+    def get_by_parent_id(self, parent_id: str) -> Optional[list[dict]]:
+        """
+        Retrieve all components that have the given parent ID.
+
+        Parameters
+        ----------
+        parent_id : str
+            The parent component ID to search for.
+
+        Returns
+        -------
+        list of dict
+            A list of component dictionaries.
+        """
+        return self.components_by_parent_id.get(parent_id, [])
+
+    def get_by_child_id(self, child_id: str) -> Optional[list[dict]]:
+        """
+        Retrieve all components that have the given child ID.
+
+        Parameters
+        ----------
+        child_id : str
+            The child component ID to search for.
+
+        Returns
+        -------
+        list of dict
+            A list of component dictionaries.
+        """
+        return self.components_by_child_id.get(child_id, [])
+
+    def get_by_folder_id(self, folder_id: str) -> Optional[list[dict]]:
+        """
+        Retrieve all components in the given folder.
+
+        Parameters
+        ----------
+        folder_id : str
+            The folder ID to search for.
+
+        Returns
+        -------
+        list of dict
+            A list of component dictionaries.
+        """
+        return self.components_by_folder_id.get(folder_id, [])
+
+    def get_all_components(self) -> list[dict]:
+        """
+        Retrieve all components stored.
+
+        Returns
+        -------
+        list of dict
+            A list of all component dictionaries.
+        """
+        return list(self.components_by_id.values())

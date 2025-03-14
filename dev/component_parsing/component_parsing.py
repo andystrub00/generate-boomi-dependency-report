@@ -1,11 +1,40 @@
 import json
 import requests
+
 from utils.api_utils import (
     build_query_body,
     generate_bulk_get_requests,
     handle_response,
     query_more_endpoint,
 )
+
+
+def get_component_metadata(runtime_vars: dict, component_id: str) -> dict:
+    """
+    Get component metadata from Boomi based on component ID.
+
+    Parameters
+    ----------
+    runtime_vars : dict
+        Dictionary of runtime variables.
+    component_id : str
+        Component ID of the component.
+
+    Returns
+    -------
+    dict
+        The component metadata object for this component.
+    """
+
+    component_metadata_response = requests.get(
+        f"{runtime_vars['base_url']}/ComponentMetadata/{component_id}",
+        headers=runtime_vars["headers"],
+        auth=runtime_vars["auth_object"],
+    )
+
+    component_metadata_response = handle_response(component_metadata_response)
+
+    return component_metadata_response
 
 
 def query_components_from_folder(runtime_vars: dict, folder_id: str) -> dict:
@@ -87,9 +116,38 @@ def get_components_in_folder_tree(runtime_vars: dict, folder_tree: dict) -> list
     return components
 
 
+def parse_component_references_bulk_response(component_refs: list[dict]) -> dict:
+    """
+    Parse the response from the component references API endpoint.
+
+    Parameters
+    ----------
+    component_refs : list of dict
+        A list of component reference objects.
+
+    Returns
+    -------
+    dict
+        A dict of parsed component reference objects, with the form {component_id: [parent_component_id_1, parent_component_id_2]}.
+    """
+
+    parsed_component_refs = {}
+
+    for bulk_response in component_refs:
+        if bulk_response.get("statusCode") == 200:
+            for component_ref in bulk_response.get("Result", {}).get("references", []):
+                child_component_id = component_ref.get("componentId")
+                parent_component_id = component_ref.get("parentComponentId")
+                parsed_component_refs.setdefault(child_component_id, set()).add(
+                    parent_component_id
+                )
+
+    return parsed_component_refs
+
+
 def get_parent_component_references(
     runtime_vars: dict, child_components: list[dict]
-) -> list:
+) -> dict:
     """
     Query parent component references for a list of child component IDs.
 
@@ -131,34 +189,17 @@ def get_parent_component_references(
             handle_response(parent_component_references_response).get("response", [])
         )
 
-    return parse_component_references_response(all_parent_component_references)
+    return parse_component_references_bulk_response(all_parent_component_references)
 
 
-def parse_component_references_response(component_refs: list[dict]) -> dict:
-    """
-    Parse the response from the component references API endpoint.
-
-    Parameters
-    ----------
-    component_refs : list of dict
-        A list of component reference objects.
-
-    Returns
-    -------
-    dict
-        A dict of parsed component reference objects, with the form {component_id: [parent_component_id_1, parent_component_id_2]}.
-    """
+def parse_component_references_query_responses(component_refs: list[dict]) -> dict:
 
     parsed_component_refs = {}
 
-    for bulk_response in component_refs:
-        if bulk_response.get("statusCode") == 200:
-            for component_ref in bulk_response.get("Result", {}).get("references", []):
-                child_component_id = component_ref.get("componentId")
-                parent_component_id = component_ref.get("parentComponentId")
-                parsed_component_refs.setdefault(child_component_id, set()).add(
-                    parent_component_id
-                )
+    for query_response in component_refs:
+        parsed_component_refs.setdefault(
+            query_response.get("parentComponentId"), []
+        ).append(query_response.get("componentId"))
 
     return parsed_component_refs
 
@@ -229,6 +270,68 @@ def get_child_component_references(
             else:
                 del component_references_response["queryToken"]
 
-        all_component_references.append(component_references_response.get("result", []))
+        if component_references_response.get("numberOfResults") > 0:
+            for component_reference in component_references_response.get("result", []):
+                all_component_references.extend(
+                    component_reference.get("references", [])
+                )
 
-    return all_component_references
+    return parse_component_references_query_responses(all_component_references)
+
+
+def get_metadata_and_parents_of_components(
+    runtime_vars: dict,
+    components: list[dict],
+) -> tuple[list[dict]]:
+    """
+    Retrieve metadata and parent references for a list of components.
+    Parameters
+    ----------
+    runtime_vars : dict
+        A dictionary containing runtime variables needed for fetching metadata.
+    components : list of dict
+        A list of dictionaries, each containing component information, including 'componentId'.
+
+    Returns
+    ----------
+    tuple of list of dict
+        A tuple containing two lists:
+        - The first list contains metadata for each component.
+        - The second list contains parent component references for each component.
+    """
+    # Fetch metadata for each component
+    # Fetch parent references for each component based on their metadata
+
+    all_comp_metadata = [
+        get_component_metadata(runtime_vars, comp.get("componentId"))
+        for comp in components
+    ]
+
+    all_comp_parents = get_parent_component_references(runtime_vars, all_comp_metadata)
+
+    return all_comp_metadata, all_comp_parents
+
+
+def run_non_folder_tree_comps_to_ground(runtime_vars: dict, component_store):
+
+    non_folder_tree_comps_exist = True
+
+    while non_folder_tree_comps_exist:
+
+        non_folder_tree_comps = component_store.get_without_metadata()
+
+        if len(non_folder_tree_comps):
+            non_folder_tree_comps_exist = False
+            break
+
+        non_folder_tree_metadata, non_folder_tree_parents = (
+            get_metadata_and_parents_of_components(runtime_vars, non_folder_tree_comps)
+        )
+
+        for comp_metadata in non_folder_tree_metadata:
+            component_store.update_component_metadata(comp_metadata)
+
+        for parent_comp_id, child_comp_ids in non_folder_tree_parents.items():
+            component_store.update_relationships(parent_comp_id, child_comp_ids)
+
+        return True

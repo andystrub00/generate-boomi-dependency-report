@@ -8,6 +8,7 @@ from component_parsing.component_parsing import (
     get_components_in_folder_tree,
     get_parent_component_references,
     get_child_component_references,
+    get_metadata_and_parents_of_components,
 )
 
 
@@ -47,10 +48,10 @@ def main():
     folder_tree = build_folder_tree(runtime_vars, initial_folder_response)
 
     # Get components in folder tree
-    component_refs = get_components_in_folder_tree(runtime_vars, folder_tree)
+    base_component_metadata = get_components_in_folder_tree(runtime_vars, folder_tree)
 
     # Initialize component store
-    component_store = ComponentStore(component_refs)
+    component_store = ComponentStore(base_component_metadata)
 
     # Get parent component references
     parent_component_refs = get_parent_component_references(
@@ -63,27 +64,37 @@ def main():
             child_component_id, parent_ids=parent_component_ids
         )
 
-    # Write components to debug log
-    # TODO - Remove this logging
-    write_to_debug_log(
-        json.dumps(component_store.convert_sets_to_lists(), indent=4),
-        debug_log_filename="component_store_post_parent_refs",
-        debug_log_suffix=".json",
-    )
-
+    # Get child component references
     child_component_refs = get_child_component_references(
         runtime_vars, component_store.get_all_components()
     )
 
-    print(f"{child_component_refs=}")
+    # Update component store with child component references
+    for parent_component_id, child_component_ids in child_component_refs.items():
+        component_store.update_relationships(
+            parent_component_id, child_ids=child_component_ids
+        )
 
-    # Write components to debug log
-    # TODO - Remove this logging
+    # TODO remove this logging
     write_to_debug_log(
-        json.dumps(child_component_refs, indent=4),
-        debug_log_filename="child_component_refs",
+        json.dumps(component_store.convert_sets_to_lists(), indent=4),
+        debug_log_filename="final_component_store",
         debug_log_suffix=".json",
     )
+
+    # TODO remove this logging
+    write_to_debug_log(
+        component_store.get_without_metadata(),
+        debug_log_filename="get_without_metadata",
+        debug_log_suffix=".txt",
+    )
+
+    # Get all the components outside of the folder tree that either reference or are referenced by something inside the folder tree
+    components_outside_folder_tree = component_store.get_without_metadata()
+
+    print(type(component_store))
+
+    get_metadata_and_parents_of_components(runtime_vars, components_outside_folder_tree)
 
 
 if __name__ == "__main__":

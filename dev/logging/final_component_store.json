@@ -22,12 +22,12 @@
     {
         "@type": "ComponentMetadata",
         "componentId": "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-        "version": 2,
+        "version": 3,
         "name": "[TEMP] [sub] Sub Process One",
         "type": "process",
         "createdDate": "2025-02-25T19:49:13Z",
         "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-02-25T19:54:55Z",
+        "modifiedDate": "2025-03-14T17:03:06Z",
         "modifiedBy": "andy.strubhar@argano.com",
         "deleted": false,
         "currentVersion": true,
@@ -41,6 +41,7 @@
         ],
         "childComponentIds": [
             "a07be6ce-13b6-41e1-a983-f7f78503bc20",
+            "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
             "fb128b14-fcbb-4a3b-a9d7-c466c11cd518"
         ]
     },
@@ -94,12 +95,12 @@
     {
         "@type": "ComponentMetadata",
         "componentId": "e9b2bfa0-9607-4fb5-8ebe-10379a752034",
-        "version": 5,
+        "version": 6,
         "name": "[TEMP] [Main] Parent Process One",
         "type": "process",
         "createdDate": "2025-02-25T19:48:25Z",
         "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-03-13T22:11:11Z",
+        "modifiedDate": "2025-03-14T17:18:03Z",
         "modifiedBy": "andy.strubhar@argano.com",
         "deleted": false,
         "currentVersion": true,
@@ -110,7 +111,8 @@
         "containsMetadata": true,
         "parentComponentIds": [],
         "childComponentIds": [
-            "26b680b8-4e09-4fd7-8143-872f4eb46e47"
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
+            "1d51728d-1417-4e19-a510-71681ee7c3b2"
         ]
     },
     {
@@ -140,12 +142,12 @@
     {
         "@type": "ComponentMetadata",
         "componentId": "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
-        "version": 1,
-        "name": "New Map",
+        "version": 2,
+        "name": "Component Reference Testing Map",
         "type": "transform.map",
         "createdDate": "2025-02-25T18:54:32Z",
         "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-02-25T18:54:32Z",
+        "modifiedDate": "2025-03-14T17:03:02Z",
         "modifiedBy": "andy.strubhar@argano.com",
         "deleted": false,
         "currentVersion": true,
@@ -155,7 +157,32 @@
         "branchId": "QjoyNTU4NQ",
         "containsMetadata": true,
         "parentComponentIds": [
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
             "e3e4fc78-21bd-49ac-91f3-eaf06d011254"
+        ],
+        "childComponentIds": [
+            "f3f22476-431b-4e86-a690-fddf33781686"
+        ]
+    },
+    {
+        "@type": "ComponentMetadata",
+        "componentId": "0e095a54-0662-49ec-b06a-b46dabaad63f",
+        "version": 1,
+        "name": "json_profile_in_sub_folder",
+        "type": "profile.json",
+        "createdDate": "2025-03-14T17:16:39Z",
+        "createdBy": "andy.strubhar@argano.com",
+        "modifiedDate": "2025-03-14T17:16:39Z",
+        "modifiedBy": "andy.strubhar@argano.com",
+        "deleted": false,
+        "currentVersion": true,
+        "folderName": "TEST SUBSUB FOLDER",
+        "folderId": "Rjo3NDM3MDI4",
+        "branchName": "main",
+        "branchId": "QjoyNTU4NQ",
+        "containsMetadata": true,
+        "parentComponentIds": [
+            "5d117b3f-240d-4ba5-8a01-b421b5974158"
         ],
         "childComponentIds": []
     },
@@ -482,12 +509,12 @@
     {
         "@type": "ComponentMetadata",
         "componentId": "f3f22476-431b-4e86-a690-fddf33781686",
-        "version": 1,
-        "name": "New Flat File Profile",
+        "version": 2,
+        "name": "component reference testing flat file",
         "type": "profile.flatfile",
         "createdDate": "2025-02-25T18:55:30Z",
         "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-02-25T18:55:30Z",
+        "modifiedDate": "2025-03-14T17:02:55Z",
         "modifiedBy": "andy.strubhar@argano.com",
         "deleted": false,
         "currentVersion": true,
@@ -496,7 +523,9 @@
         "branchName": "main",
         "branchId": "QjoyNTU4NQ",
         "containsMetadata": true,
-        "parentComponentIds": [],
+        "parentComponentIds": [
+            "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4"
+        ],
         "childComponentIds": []
     },
     {
@@ -540,11 +569,27 @@
         "childComponentIds": []
     },
     {
+        "componentId": "5d117b3f-240d-4ba5-8a01-b421b5974158",
+        "parentComponentIds": [],
+        "childComponentIds": [
+            "0e095a54-0662-49ec-b06a-b46dabaad63f"
+        ],
+        "containsMetadata": false
+    },
+    {
         "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
         "parentComponentIds": [],
         "childComponentIds": [
             "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4"
         ],
+        "containsMetadata": false
+    },
+    {
+        "componentId": "1d51728d-1417-4e19-a510-71681ee7c3b2",
+        "parentComponentIds": [
+            "e9b2bfa0-9607-4fb5-8ebe-10379a752034"
+        ],
+        "childComponentIds": [],
         "containsMetadata": false
     }
 ]

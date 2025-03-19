@@ -55,6 +55,19 @@ class ComponentStore:
 
         return component_copy
 
+    def _convert_component_sets(self, component):
+        """Helper method to convert sets to lists in a component if needed"""
+        component_copy = component.copy()
+        if isinstance(component_copy["parentComponentIds"], set):
+            component_copy["parentComponentIds"] = list(
+                component_copy["parentComponentIds"]
+            )
+        if isinstance(component_copy["childComponentIds"], set):
+            component_copy["childComponentIds"] = list(
+                component_copy["childComponentIds"]
+            )
+        return component_copy
+
     def create_placeholder_component(self, component_id):
         """Create a minimal component with the given ID if it doesn't exist"""
         if component_id in self.components_by_id:
@@ -181,61 +194,74 @@ class ComponentStore:
             return self.add_component(component_copy)
 
     # Fast lookup methods
-    def get_by_id(self, component_id):
+    def get_by_id(self, component_id, convert_sets_to_lists=False):
         """Get a component by ID"""
-        return self.components_by_id.get(component_id)
+        component = self.components_by_id.get(component_id)
+        if component and convert_sets_to_lists:
+            return self._convert_component_sets(component)
+        return component
 
-    def get_by_parent_id(self, parent_id):
+    def get_by_parent_id(self, parent_id, convert_sets_to_lists=False):
         """Get all components that have the given parent"""
         component_ids = self.components_by_parent_id.get(parent_id, set())
-        return [
+        components = [
             self.components_by_id[cid]
             for cid in component_ids
             if cid in self.components_by_id
         ]
 
-    def get_by_child_id(self, child_id):
+        if convert_sets_to_lists:
+            return [self._convert_component_sets(comp) for comp in components]
+        return components
+
+    def get_by_child_id(self, child_id, convert_sets_to_lists=False):
         """Get all components that have the given child"""
         component_ids = self.components_by_child_id.get(child_id, set())
-        return [
+        components = [
             self.components_by_id[cid]
             for cid in component_ids
             if cid in self.components_by_id
         ]
 
-    def get_by_folder_id(self, folder_id):
+        if convert_sets_to_lists:
+            return [self._convert_component_sets(comp) for comp in components]
+        return components
+
+    def get_by_folder_id(self, folder_id, convert_sets_to_lists=False):
         """Get all components in the given folder"""
         component_ids = self.components_by_folder_id.get(folder_id, set())
-        return [
+        components = [
             self.components_by_id[cid]
             for cid in component_ids
             if cid in self.components_by_id
         ]
 
-    def get_without_metadata(self):
+        if convert_sets_to_lists:
+            return [self._convert_component_sets(comp) for comp in components]
+        return components
+
+    def get_without_metadata(self, convert_sets_to_lists=False):
         """Get all components with containsMetadata = False"""
-        return [
+
+        components = [
             component
             for component in self.components_by_id.values()
             if not component.get("containsMetadata", True)
         ]
 
-    def get_all_components(self):
-        """Get all components"""
-        return list(self.components_by_id.values())
+        if convert_sets_to_lists:
+            return [self._convert_component_sets(comp) for comp in components]
+        return components
 
+    def get_all_components(self, convert_sets_to_lists=False):
+        """Get all components"""
+        components = list(self.components_by_id.values())
+
+        if convert_sets_to_lists:
+            return [self._convert_component_sets(comp) for comp in components]
+        return components
+
+    # TODO - Remove this function.
     def convert_sets_to_lists(self):
         """Convert all sets to lists for JSON serialization"""
-        result = []
-        for component in self.components_by_id.values():
-            component_copy = component.copy()
-            if isinstance(component_copy["parentComponentIds"], set):
-                component_copy["parentComponentIds"] = list(
-                    component_copy["parentComponentIds"]
-                )
-            if isinstance(component_copy["childComponentIds"], set):
-                component_copy["childComponentIds"] = list(
-                    component_copy["childComponentIds"]
-                )
-            result.append(component_copy)
-        return result
+        return self.get_all_components(convert_sets_to_lists=True)

@@ -8,7 +8,7 @@ from component_parsing.component_parsing import (
     get_components_in_folder_tree,
     get_parent_component_references,
     get_child_component_references,
-    get_metadata_and_parents_of_components,
+    run_non_folder_tree_comps_to_ground,
 )
 
 
@@ -75,26 +75,35 @@ def main():
             parent_component_id, child_ids=child_component_ids
         )
 
-    # TODO remove this logging
+    # Get all the components outside of the folder tree that either reference or are referenced by something inside the folder tree
+    run_non_folder_tree_comps_to_ground(runtime_vars, component_store)
+
+    # TODO - Remove Logging
     write_to_debug_log(
-        json.dumps(component_store.convert_sets_to_lists(), indent=4),
+        json.dumps(
+            component_store.get_all_components(convert_sets_to_lists=True), indent=4
+        ),
         debug_log_filename="final_component_store",
         debug_log_suffix=".json",
     )
 
-    # TODO remove this logging
-    write_to_debug_log(
-        component_store.get_without_metadata(),
-        debug_log_filename="get_without_metadata",
-        debug_log_suffix=".txt",
-    )
+    final_export = []
+    all_comps = component_store.get_all_components(convert_sets_to_lists=True)
+    for comp in all_comps:
+        final_export.append(
+            {
+                "id": comp.get("componentId"),
+                "name": comp.get("name"),
+                "type": comp.get("type"),
+                "version": comp.get("version"),
+                "filepath": comp.get("folderName"),
+                "parents": comp.get("parentComponentIds"),
+                "children": comp.get("childComponentIds"),
+            }
+        )
 
-    # Get all the components outside of the folder tree that either reference or are referenced by something inside the folder tree
-    components_outside_folder_tree = component_store.get_without_metadata()
-
-    print(type(component_store))
-
-    get_metadata_and_parents_of_components(runtime_vars, components_outside_folder_tree)
+    with open("temp_output.json", "w") as outfile:
+        outfile.write(json.dumps(final_export, indent=4))
 
 
 if __name__ == "__main__":

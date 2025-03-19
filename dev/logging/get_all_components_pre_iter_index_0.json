@@ -111,8 +111,8 @@
         "containsMetadata": true,
         "parentComponentIds": [],
         "childComponentIds": [
-            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-            "1d51728d-1417-4e19-a510-71681ee7c3b2"
+            "1d51728d-1417-4e19-a510-71681ee7c3b2",
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47"
         ]
     },
     {
@@ -157,8 +157,8 @@
         "branchId": "QjoyNTU4NQ",
         "containsMetadata": true,
         "parentComponentIds": [
-            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-            "e3e4fc78-21bd-49ac-91f3-eaf06d011254"
+            "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47"
         ],
         "childComponentIds": [
             "f3f22476-431b-4e86-a690-fddf33781686"
@@ -569,95 +569,27 @@
         "childComponentIds": []
     },
     {
-        "@type": "ComponentMetadata",
-        "componentId": "5d117b3f-240d-4ba5-8a01-b421b5974158",
-        "version": 3,
-        "name": "map_in_main_folder",
-        "type": "transform.map",
-        "createdDate": "2025-03-14T17:18:00Z",
-        "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-03-14T17:41:34Z",
-        "modifiedBy": "andy.strubhar@argano.com",
-        "deleted": false,
-        "currentVersion": true,
-        "folderName": "Atomsphere API",
-        "folderId": "Rjo3NDM2Nzc4",
-        "branchName": "main",
-        "branchId": "QjoyNTU4NQ",
-        "parentComponentIds": [
-            "e3e4fc78-21bd-49ac-91f3-eaf06d011254"
+        "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
+        "parentComponentIds": [],
+        "childComponentIds": [
+            "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4"
         ],
+        "containsMetadata": false
+    },
+    {
+        "componentId": "5d117b3f-240d-4ba5-8a01-b421b5974158",
+        "parentComponentIds": [],
         "childComponentIds": [
             "0e095a54-0662-49ec-b06a-b46dabaad63f"
         ],
-        "containsMetadata": true
+        "containsMetadata": false
     },
     {
-        "@type": "ComponentMetadata",
-        "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
-        "version": 5,
-        "name": "[Main] Component Reference Hierarchy Testing",
-        "type": "process",
-        "createdDate": "2025-02-28T15:41:54Z",
-        "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-03-14T17:24:46Z",
-        "modifiedBy": "andy.strubhar@argano.com",
-        "deleted": false,
-        "currentVersion": true,
-        "folderName": "Atomsphere API",
-        "folderId": "Rjo3NDM2Nzc4",
-        "branchName": "main",
-        "branchId": "QjoyNTU4NQ",
-        "parentComponentIds": [],
-        "childComponentIds": [
-            "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
-            "5d117b3f-240d-4ba5-8a01-b421b5974158"
-        ],
-        "containsMetadata": true
-    },
-    {
-        "@type": "ComponentMetadata",
         "componentId": "1d51728d-1417-4e19-a510-71681ee7c3b2",
-        "version": 1,
-        "name": "[sub] Sub Process Three - Outside of Folder",
-        "type": "process",
-        "createdDate": "2025-03-13T22:10:43Z",
-        "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-03-13T22:10:43Z",
-        "modifiedBy": "andy.strubhar@argano.com",
-        "deleted": false,
-        "currentVersion": true,
-        "folderName": "Atomsphere API",
-        "folderId": "Rjo3NDM2Nzc4",
-        "branchName": "main",
-        "branchId": "QjoyNTU4NQ",
         "parentComponentIds": [
-            "92199af4-6e68-4f74-bbd2-91f58ca024d9",
             "e9b2bfa0-9607-4fb5-8ebe-10379a752034"
         ],
         "childComponentIds": [],
-        "containsMetadata": true
-    },
-    {
-        "@type": "ComponentMetadata",
-        "componentId": "92199af4-6e68-4f74-bbd2-91f58ca024d9",
-        "version": 1,
-        "name": "[Main] Parent Process Four, outside folder",
-        "type": "process",
-        "createdDate": "2025-03-14T19:42:55Z",
-        "createdBy": "andy.strubhar@argano.com",
-        "modifiedDate": "2025-03-14T19:42:55Z",
-        "modifiedBy": "andy.strubhar@argano.com",
-        "deleted": false,
-        "currentVersion": true,
-        "folderName": "Atomsphere API",
-        "folderId": "Rjo3NDM2Nzc4",
-        "branchName": "main",
-        "branchId": "QjoyNTU4NQ",
-        "parentComponentIds": [],
-        "childComponentIds": [
-            "1d51728d-1417-4e19-a510-71681ee7c3b2"
-        ],
-        "containsMetadata": true
+        "containsMetadata": false
     }
 ]

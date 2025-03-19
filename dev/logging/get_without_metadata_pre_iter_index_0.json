@@ -1,0 +1,26 @@
+[
+    {
+        "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
+        "parentComponentIds": [],
+        "childComponentIds": [
+            "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4"
+        ],
+        "containsMetadata": false
+    },
+    {
+        "componentId": "5d117b3f-240d-4ba5-8a01-b421b5974158",
+        "parentComponentIds": [],
+        "childComponentIds": [
+            "0e095a54-0662-49ec-b06a-b46dabaad63f"
+        ],
+        "containsMetadata": false
+    },
+    {
+        "componentId": "1d51728d-1417-4e19-a510-71681ee7c3b2",
+        "parentComponentIds": [
+            "e9b2bfa0-9607-4fb5-8ebe-10379a752034"
+        ],
+        "childComponentIds": [],
+        "containsMetadata": false
+    }
+]

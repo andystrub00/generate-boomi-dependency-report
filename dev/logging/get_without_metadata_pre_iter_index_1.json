@@ -1,0 +1,10 @@
+[
+    {
+        "componentId": "92199af4-6e68-4f74-bbd2-91f58ca024d9",
+        "parentComponentIds": [],
+        "childComponentIds": [
+            "1d51728d-1417-4e19-a510-71681ee7c3b2"
+        ],
+        "containsMetadata": false
+    }
+]

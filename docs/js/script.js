@@ -8,8 +8,9 @@ console.log(componentsData)
 
 // Group mapping for component types
 const typeGroups = {
-    'Profile': {shape: 'ellipse', color: '#FF6B6B'},
-    'Process': {shape: 'rectangle', color: '#4ECDC4'},
+    'profile.json': {shape: 'ellipse', color: '#FF6B6B'},
+    'profile.xml': {shape: 'ellipse', color: '#FF6B6B'},
+    'process': {shape: 'rectangle', color: '#4ECDC4'},
     'Connector': {shape: 'roundrectangle', color: '#FFD166'},
     'Connector Operation': {shape: 'rhomboid', color: '#6A0572'},
     'Mapping': {shape: 'barrel', color: '#1A535C'},

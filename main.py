@@ -35,7 +35,7 @@ def main():
     # TODO - switch back to normal command line parser
     # args = parse_command_line_args()
     args = spoof_command_line_args(
-        folder_name="IAM Integrations", folder_id=None, parse_subfolders=True
+        folder_name="Webconnex Integrations", folder_id=None, parse_subfolders=True
     )
 
     # Initialize dictionary of runtime variablesm including environment variables, command line arguments, and API variables
@@ -87,7 +87,7 @@ def main():
 
     # Write the final data to the JavaScript file for use in HTML.
     write_javascript_variable_file(
-        file_path="dev/docs/data/component_data.js",
+        file_path="docs/data/component_data.js",
         variable_data=all_components,
         variable_name="componentsData",
     )

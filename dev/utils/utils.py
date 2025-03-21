@@ -1,4 +1,5 @@
 import os
+import json
 import argparse
 from dotenv import dotenv_values
 from utils.api_utils import init_global_api_vars
@@ -107,3 +108,36 @@ def init_runtime_vars(env_vars: dict, args: argparse.Namespace) -> dict:
         runtime_vars[api_key] = api_val
 
     return runtime_vars
+
+
+def write_javascript_variable_file(
+    file_path: str, variable_data: dict, variable_name: str = "componentsData"
+) -> str:
+    """
+    Writes a dictionary to a JavaScript file for use in HTML pages
+
+    Parameters
+    ----------
+    file_path : str
+        File Path for the JavaScript file
+    variable_data : dict
+        The dict to write
+    variable_name : str
+        The name of the JavaScript variable
+
+
+    Returns
+    -------
+    str
+        The file path to the JavaScript file
+    """
+
+    # Create the JavaScript file content
+    # This creates a variable named 'variable_data' containing your JSON data
+    js_content = f"const {variable_name} = {json.dumps(variable_data, indent=2)};"
+
+    # Write the JavaScript file
+    with open(file_path, "w") as js_file:
+        js_file.write(js_content)
+
+    return file_path

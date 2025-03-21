@@ -1,4 +1,8 @@
-from utils.utils import fetch_env_variables, init_runtime_vars
+from utils.utils import (
+    fetch_env_variables,
+    init_runtime_vars,
+    write_javascript_variable_file,
+)
 
 from folder_parsing.folder_parsing import (
     query_initial_folder,
@@ -31,7 +35,7 @@ def main():
     # TODO - switch back to normal command line parser
     # args = parse_command_line_args()
     args = spoof_command_line_args(
-        folder_name="TEST SUBFOLDER", folder_id=None, parse_subfolders=True
+        folder_name="IAM Integrations", folder_id=None, parse_subfolders=True
     )
 
     # Initialize dictionary of runtime variablesm including environment variables, command line arguments, and API variables
@@ -78,32 +82,15 @@ def main():
     # Get all the components outside of the folder tree that either reference or are referenced by something inside the folder tree
     run_non_folder_tree_comps_to_ground(runtime_vars, component_store)
 
-    # TODO - Remove Logging
-    write_to_debug_log(
-        json.dumps(
-            component_store.get_all_components(convert_sets_to_lists=True), indent=4
-        ),
-        debug_log_filename="final_component_store",
-        debug_log_suffix=".json",
+    # Get the final component data from the component store
+    all_components = component_store.get_all_components(convert_sets_to_lists=True)
+
+    # Write the final data to the JavaScript file for use in HTML.
+    write_javascript_variable_file(
+        file_path="dev/docs/data/component_data.js",
+        variable_data=all_components,
+        variable_name="componentsData",
     )
-
-    final_export = []
-    all_comps = component_store.get_all_components(convert_sets_to_lists=True)
-    for comp in all_comps:
-        final_export.append(
-            {
-                "id": comp.get("componentId"),
-                "name": comp.get("name"),
-                "type": comp.get("type"),
-                "version": comp.get("version"),
-                "filepath": comp.get("folderName"),
-                "parents": comp.get("parentComponentIds"),
-                "children": comp.get("childComponentIds"),
-            }
-        )
-
-    with open("temp_output.json", "w") as outfile:
-        outfile.write(json.dumps(final_export, indent=4))
 
 
 if __name__ == "__main__":

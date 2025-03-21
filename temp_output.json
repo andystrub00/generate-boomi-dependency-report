@@ -42,8 +42,8 @@
         "version": 1,
         "filepath": "TEST SUBFOLDER",
         "parents": [
-            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-            "3a8fa0b3-0641-4ecb-aad7-085951ba59df"
+            "3a8fa0b3-0641-4ecb-aad7-085951ba59df",
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47"
         ],
         "children": []
     },
@@ -55,8 +55,8 @@
         "filepath": "TEST SUBFOLDER",
         "parents": [],
         "children": [
-            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-            "1d51728d-1417-4e19-a510-71681ee7c3b2"
+            "1d51728d-1417-4e19-a510-71681ee7c3b2",
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47"
         ]
     },
     {
@@ -66,8 +66,8 @@
         "version": 1,
         "filepath": "TEST SUBFOLDER",
         "parents": [
-            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-            "3a8fa0b3-0641-4ecb-aad7-085951ba59df"
+            "3a8fa0b3-0641-4ecb-aad7-085951ba59df",
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47"
         ],
         "children": []
     },
@@ -78,8 +78,8 @@
         "version": 2,
         "filepath": "TEST SUBSUB FOLDER",
         "parents": [
-            "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-            "e3e4fc78-21bd-49ac-91f3-eaf06d011254"
+            "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
+            "26b680b8-4e09-4fd7-8143-872f4eb46e47"
         ],
         "children": [
             "f3f22476-431b-4e86-a690-fddf33781686"
@@ -290,8 +290,8 @@
         "filepath": "Atomsphere API",
         "parents": [],
         "children": [
-            "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
-            "5d117b3f-240d-4ba5-8a01-b421b5974158"
+            "5d117b3f-240d-4ba5-8a01-b421b5974158",
+            "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4"
         ]
     },
     {

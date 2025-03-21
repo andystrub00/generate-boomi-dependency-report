@@ -1,26 +1,20 @@
 
+
+
 // Sample data - Replace this with your actual data from Python script
-const componentsData = [
-    {id: 'comp1', name: 'Order Process', type: 'Process', version: '1.2', filepath: '/processes/order/main', parents: [], children: ['comp2', 'comp3']},
-    {id: 'comp2', name: 'Order Validation', type: 'Process', version: '1.0', filepath: '/processes/order/validation', parents: ['comp1'], children: ['comp4']},
-    {id: 'comp3', name: 'Customer Lookup', type: 'Connector', version: '2.1', filepath: '/connectors/customer-db', parents: ['comp1'], children: []},
-    {id: 'comp4', name: 'Order to Invoice Map', type: 'Map', version: '1.5', filepath: '/maps/order-invoice', parents: ['comp2'], children: ['comp5']},
-    {id: 'comp5', name: 'Invoice Decision', type: 'Decision', version: '1.0', filepath: '/decisions/invoice-route', parents: ['comp4'], children: ['comp6', 'comp7']},
-    {id: 'comp6', name: 'Email Service', type: 'Flow Service', version: '3.0', filepath: '/services/email', parents: ['comp5'], children: []},
-    {id: 'comp7', name: 'File Trigger', type: 'Trigger', version: '1.1', filepath: '/triggers/file', parents: ['comp5'], children: ['comp8']},
-    {id: 'comp8', name: 'FTP Transport', type: 'Transport', version: '2.0', filepath: '/transports/ftp', parents: ['comp7'], children: []},
-    {id: 'comp9', name: 'Logging Service', type: 'Other', version: '1.3', filepath: '/services/logging', parents: [], children: ['comp1']}
-];
+console.log(componentsData)
+
+
 
 // Group mapping for component types
 const typeGroups = {
-    'Process': {shape: 'ellipse', color: '#FF6B6B'},
-    'Connector': {shape: 'rectangle', color: '#4ECDC4'},
-    'Map': {shape: 'roundrectangle', color: '#FFD166'},
-    'Decision': {shape: 'rhomboid', color: '#6A0572'},
-    'Flow Service': {shape: 'barrel', color: '#1A535C'},
-    'Trigger': {shape: 'triangle', color: '#F2B880'},
-    'Transport': {shape: 'rectangle', color: '#3D348B'},
+    'Profile': {shape: 'ellipse', color: '#FF6B6B'},
+    'Process': {shape: 'rectangle', color: '#4ECDC4'},
+    'Connector': {shape: 'roundrectangle', color: '#FFD166'},
+    'Connector Operation': {shape: 'rhomboid', color: '#6A0572'},
+    'Mapping': {shape: 'barrel', color: '#1A535C'},
+    'Document Cache': {shape: 'triangle', color: '#F2B880'},
+    'Extended Properties': {shape: 'rectangle', color: '#3D348B'},
     'Other': {shape: 'rectangle', color: '#7D8491'}
 };
 
@@ -62,6 +56,8 @@ function createGraph(data) {
     const cy = cytoscape({
     container: document.getElementById('cy'),
     elements: elements,
+
+    // Inside the createGraph function, update the style section:
     style: [
         {
         selector: 'node',
@@ -69,23 +65,31 @@ function createGraph(data) {
             'label': 'data(label)',
             'background-color': 'data(backgroundColor)',
             'shape': 'data(shape)',
-            'width': '60px',
-            'height': '60px',
+            'width': '100px',  // Increased width
+            'height': '80px',  // Increased height
             'text-valign': 'center',
             'text-halign': 'center',
             'text-wrap': 'wrap',
-            'font-size': '10px',
-            'text-max-width': '80px'
+            'font-size': '12px',  // Increased font size
+            'text-max-width': '90px',  // Increased text width
+            'color': '#000000',  // Black text for better readability
+            'text-outline-color': '#ffffff',  // White outline
+            'text-outline-width': '1px',  // Small outline for contrast
+            'text-background-color': 'rgba(255, 255, 255, 0.7)',  // Semi-transparent white background
+            'text-background-opacity': 1,
+            'text-background-shape': 'roundrectangle',
+            'text-background-padding': '3px'
         }
         },
         {
         selector: 'edge',
         style: {
             'width': 3,
-            'line-color': '#ccc',
-            'target-arrow-color': '#ccc',
+            'line-color': '#888',  // Slightly darker gray
+            'target-arrow-color': '#888',
             'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier'
+            'curve-style': 'bezier',
+            'arrow-scale': 1.5  // Larger arrows
         }
         },
         {
@@ -93,14 +97,66 @@ function createGraph(data) {
         style: {
             'line-color': '#ff0000',
             'target-arrow-color': '#ff0000',
-            'z-index': 999
+            'z-index': 999,
+            'width': 4  // Thicker highlighted edges
         }
         },
         {
         selector: '.selected',
         style: {
-            'border-width': '3px',
-            'border-color': '#3366ff'
+            'border-width': '4px',
+            'border-color': '#3366ff',
+            'border-opacity': 1
+        }
+        },
+        // Add specific styles for different shapes
+        {
+        selector: 'node[shape="ellipse"]',  // Process
+        style: {
+            'shape': 'ellipse',
+            'width': '110px',  // Wider for ellipses
+            'height': '80px',
+        }
+        },
+        {
+        selector: 'node[shape="rectangle"]',  // Connector and Others
+        style: {
+            'shape': 'rectangle',
+            'width': '100px',
+            'height': '70px',
+        }
+        },
+        {
+        selector: 'node[shape="roundrectangle"]',  // Map
+        style: {
+            'shape': 'roundrectangle',
+            'width': '110px',
+            'height': '70px',
+            'border-radius': '10px'
+        }
+        },
+        {
+        selector: 'node[shape="rhomboid"]',  // Decision
+        style: {
+            'shape': 'rhomboid',
+            'width': '120px',  // Wider for rhomboids
+            'height': '70px',
+        }
+        },
+        {
+        selector: 'node[shape="barrel"]',  // Flow Service
+        style: {
+            'shape': 'barrel',
+            'width': '110px',
+            'height': '80px',
+        }
+        },
+        {
+        selector: 'node[shape="triangle"]',  // Trigger
+        style: {
+            'shape': 'triangle',
+            'width': '100px',
+            'height': '90px',  // Taller for triangles
         }
         }
     ],
@@ -129,28 +185,28 @@ function createGraph(data) {
     
     // Node selection
     cy.on('tap', 'node', function(evt) {
-    const node = evt.target;
-    const nodeData = node.data();
-    
-    // Highlight connected edges
-    cy.elements().removeClass('highlighted selected');
-    node.addClass('selected');
-    node.neighborhood().addClass('highlighted');
-    
-    // Show component details
-    document.getElementById('component-details').classList.add('visible');
-    document.getElementById('detail-name').textContent = nodeData.label;
-    document.getElementById('detail-type').textContent = nodeData.type;
-    document.getElementById('detail-version').textContent = nodeData.version;
-    document.getElementById('detail-path').textContent = nodeData.filepath;
-    });
-    
-    cy.on('tap', function(evt) {
-    if (evt.target === cy) {
+        const node = evt.target;
+        const nodeData = node.data();
+        
+        // Highlight connected edges
         cy.elements().removeClass('highlighted selected');
-        document.getElementById('component-details').classList.remove('visible');
-    }
-    });
+        node.addClass('selected');
+        node.neighborhood().addClass('highlighted');
+        
+        // Show component details
+        document.getElementById('component-details').classList.add('visible');
+        document.getElementById('detail-name').textContent = nodeData.label;
+        document.getElementById('detail-type').textContent = nodeData.type;
+        document.getElementById('detail-version').textContent = nodeData.version;
+        document.getElementById('detail-path').textContent = nodeData.filepath;
+      });
+      
+      cy.on('tap', function(evt) {
+        if (evt.target === cy) {
+          cy.elements().removeClass('highlighted selected');
+          document.getElementById('component-details').classList.remove('visible');
+        }
+      });
     
     // Reset view button
     document.getElementById('reset').addEventListener('click', () => {
@@ -315,108 +371,118 @@ function createGraph(data) {
         
         reader.readAsText(file);
     });
-    
-    // Function to handle filtering by component type
-    function addComponentTypeFilters() {
-        const filterContainer = document.createElement('div');
-        filterContainer.className = 'type-filters';
-        filterContainer.innerHTML = '<h3>Filter by Type</h3>';
-        
-        const typeCheckboxes = document.createElement('div');
-        
-        // Get unique component types
-        const types = Object.keys(typeGroups);
-        
-        types.forEach(type => {
-        const group = typeGroups[type];
-        const checkboxId = `filter-${type.toLowerCase().replace(/\s+/g, '-')}`;
-        
-        const checkboxItem = document.createElement('div');
-        checkboxItem.className = 'legend-item';
-        
-        const colorBox = document.createElement('div');
-        colorBox.className = 'legend-color';
-        colorBox.style.backgroundColor = group.color;
-        if (type === 'Process') colorBox.style.borderRadius = '50%';
-        if (type === 'Decision') colorBox.style.transform = 'rotate(45deg)';
-        
-        const label = document.createElement('label');
-        label.htmlFor = checkboxId;
-        
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = checkboxId;
-        checkbox.checked = true;
-        checkbox.dataset.type = type;
-        
-        checkbox.addEventListener('change', updateTypeFilters);
-        
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(` ${type}`));
-        
-        checkboxItem.appendChild(colorBox);
-        checkboxItem.appendChild(label);
-        typeCheckboxes.appendChild(checkboxItem);
-        });
-        
-        filterContainer.appendChild(typeCheckboxes);
-        
-        // Add a select/deselect all button
-        const selectAllContainer = document.createElement('div');
-        selectAllContainer.style.marginTop = '10px';
-        
-        const selectAllBtn = document.createElement('button');
-        selectAllBtn.textContent = 'Select All';
-        selectAllBtn.addEventListener('click', () => {
-        const checkboxes = document.querySelectorAll('.type-filters input[type="checkbox"]');
-        checkboxes.forEach(cb => cb.checked = true);
-        updateTypeFilters();
-        });
-        
-        const deselectAllBtn = document.createElement('button');
-        deselectAllBtn.textContent = 'Deselect All';
-        deselectAllBtn.addEventListener('click', () => {
-        const checkboxes = document.querySelectorAll('.type-filters input[type="checkbox"]');
-        checkboxes.forEach(cb => cb.checked = false);
-        updateTypeFilters();
-        });
-        
-        selectAllContainer.appendChild(selectAllBtn);
-        selectAllContainer.appendChild(deselectAllBtn);
-        filterContainer.appendChild(selectAllContainer);
-        
-        // Add the filter container after the legend
-        const sidebar = document.querySelector('.sidebar');
-        const legend = document.querySelector('.legend');
-        sidebar.insertBefore(filterContainer, legend.nextSibling);
-    }
-    
-    function updateTypeFilters() {
-        const selectedTypes = Array.from(document.querySelectorAll('.type-filters input[type="checkbox"]:checked'))
-        .map(cb => cb.dataset.type);
-        
-        cy.nodes().forEach(node => {
-        const type = node.data('type');
-        if (selectedTypes.includes(type)) {
-            node.removeClass('filtered-out');
-        } else {
-            node.addClass('filtered-out');
-        }
-        });
-    }
-    
-    // Add style for filtered-out nodes
-    const filterStyle = document.createElement('style');
-    filterStyle.innerHTML = `
-        .filtered-out {
-        display: none;
-        }
-    `;
-    document.head.appendChild(filterStyle);
-    
-    // Initialize with sample data
-    createGraph(componentsData);
-    
-    // Add type filters after creating the graph
-    addComponentTypeFilters();
+
+    // Return the cy instance for further manipulation
+    return cy;
+
 }
+    
+// Function to handle filtering by component type
+function addComponentTypeFilters() {
+    const filterContainer = document.createElement('div');
+    filterContainer.className = 'type-filters';
+    filterContainer.innerHTML = '<h3>Filter by Type</h3>';
+    
+    const typeCheckboxes = document.createElement('div');
+    
+    // Get unique component types
+    const types = Object.keys(typeGroups);
+    
+    types.forEach(type => {
+    const group = typeGroups[type];
+    const checkboxId = `filter-${type.toLowerCase().replace(/\s+/g, '-')}`;
+    
+    const checkboxItem = document.createElement('div');
+    checkboxItem.className = 'legend-item';
+    
+    const colorBox = document.createElement('div');
+    colorBox.className = 'legend-color';
+    colorBox.style.backgroundColor = group.color;
+    if (type === 'Process') colorBox.style.borderRadius = '50%';
+    if (type === 'Decision') colorBox.style.transform = 'rotate(45deg)';
+    
+    const label = document.createElement('label');
+    label.htmlFor = checkboxId;
+    
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = checkboxId;
+    checkbox.checked = true;
+    checkbox.dataset.type = type;
+    
+    checkbox.addEventListener('change', updateTypeFilters);
+    
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(` ${type}`));
+    
+    checkboxItem.appendChild(colorBox);
+    checkboxItem.appendChild(label);
+    typeCheckboxes.appendChild(checkboxItem);
+    });
+    
+    filterContainer.appendChild(typeCheckboxes);
+    
+    // Add a select/deselect all button
+    const selectAllContainer = document.createElement('div');
+    selectAllContainer.style.marginTop = '10px';
+    
+    const selectAllBtn = document.createElement('button');
+    selectAllBtn.textContent = 'Select All';
+    selectAllBtn.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.type-filters input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.checked = true);
+    updateTypeFilters();
+    });
+    
+    const deselectAllBtn = document.createElement('button');
+    deselectAllBtn.textContent = 'Deselect All';
+    deselectAllBtn.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.type-filters input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.checked = false);
+    updateTypeFilters();
+    });
+    
+    selectAllContainer.appendChild(selectAllBtn);
+    selectAllContainer.appendChild(deselectAllBtn);
+    filterContainer.appendChild(selectAllContainer);
+    
+    // Add the filter container after the legend
+    const sidebar = document.querySelector('.sidebar');
+    const legend = document.querySelector('.legend');
+    sidebar.insertBefore(filterContainer, legend.nextSibling);
+}
+
+function updateTypeFilters() {
+    const selectedTypes = Array.from(document.querySelectorAll('.type-filters input[type="checkbox"]:checked'))
+    .map(cb => cb.dataset.type);
+
+    console.log("Hello World!");
+    console.log(typeof cy.nodes);
+    
+    cy.nodes().forEach(node => {
+    const type = node.data('type');
+    if (selectedTypes.includes(type)) {
+        node.removeClass('filtered-out');
+    } else {
+        node.addClass('filtered-out');
+    }
+    });
+}
+
+// Add style for filtered-out nodes
+const filterStyle = document.createElement('style');
+filterStyle.innerHTML = `
+    .filtered-out {
+    display: none;
+    }
+`;
+document.head.appendChild(filterStyle);
+
+// Initialize with sample data
+createGraph(componentsData);
+
+// Add type filters after creating the graph
+addComponentTypeFilters();
+
+
+

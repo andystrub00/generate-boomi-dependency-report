@@ -35,7 +35,9 @@ def main():
     # TODO - switch back to normal command line parser
     # args = parse_command_line_args()
     args = spoof_command_line_args(
-        folder_name="Returns and Exchanges", folder_id=None, parse_subfolders=True
+        folder_name="zEmma Integrations Development",
+        folder_id=None,
+        parse_subfolders=True,
     )
 
     # Initialize dictionary of runtime variablesm including environment variables, command line arguments, and API variables

@@ -2,6 +2,7 @@ from utils.utils import (
     fetch_env_variables,
     init_runtime_vars,
     write_javascript_variable_file,
+    generate_simple_component_type,
 )
 
 from folder_parsing.folder_parsing import (
@@ -35,7 +36,7 @@ def main():
     # TODO - switch back to normal command line parser
     # args = parse_command_line_args()
     args = spoof_command_line_args(
-        folder_name="zEmma Integrations Development",
+        folder_name="TEST SUBFOLDER",
         folder_id=None,
         parse_subfolders=True,
     )
@@ -86,6 +87,10 @@ def main():
 
     # Get the final component data from the component store
     all_components = component_store.get_all_components(convert_sets_to_lists=True)
+
+    # Generate simple component types for each component
+    for component in all_components:
+        component["simple_type"] = generate_simple_component_type(component)
 
     # Write the final data to the JavaScript file for use in HTML.
     write_javascript_variable_file(

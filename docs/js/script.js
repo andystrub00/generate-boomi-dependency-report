@@ -8,14 +8,13 @@ console.log(componentsData)
 
 // Group mapping for component types
 const typeGroups = {
-    'profile.json': {shape: 'ellipse', color: '#FF6B6B'},
-    'profile.xml': {shape: 'ellipse', color: '#FF6B6B'},
-    'process': {shape: 'rectangle', color: '#4ECDC4'},
-    'Connector': {shape: 'roundrectangle', color: '#FFD166'},
+    'Profile': {shape: 'ellipse', color: '#FF6B6B'},
     'Connector Operation': {shape: 'rhomboid', color: '#6A0572'},
-    'Mapping': {shape: 'barrel', color: '#1A535C'},
+    'Process': {shape: 'rectangle', color: '#4ECDC4'},
+    'Connector': {shape: 'roundrectangle', color: '#FFD166'},
+    'Map': {shape: 'barrel', color: '#1A535C'},
     'Document Cache': {shape: 'triangle', color: '#F2B880'},
-    'Extended Properties': {shape: 'rectangle', color: '#3D348B'},
+    'Function': {shape: 'rectangle', color: '#3D348B'},
     'Other': {shape: 'rectangle', color: '#7D8491'}
 };
 
@@ -26,7 +25,7 @@ function createGraph(data) {
     
     // Add nodes
     data.forEach(comp => {
-    const group = typeGroups[comp.type] || typeGroups['Other'];
+    const group = typeGroups[comp.simple_type] || typeGroups['Other'];
     elements.push({
         data: {
         id: comp.componentId,

@@ -141,3 +141,39 @@ def write_javascript_variable_file(
         js_file.write(js_content)
 
     return file_path
+
+
+def generate_simple_component_type(component: dict) -> str:
+    """
+    Generate a simple component type string based on the component's type.
+
+    Parameters
+    ----------
+    component : dict
+        The component dictionary containing its type.
+
+    Returns
+    -------
+    str
+        A simple string representation of the component type.
+    """
+    # Map of component types to their simple representations
+    component_type_map = {
+        "process": "Process",
+        "connector-action": "Connector Operation",
+        "transform.map": "Map",
+        "profile.xml": "Profile",
+        "documentcache": "Document Cache",
+        "profile.json": "Profile",
+        "transform.function": "Function",
+        "processroute": "Other",
+        "connector-settings": "Connector",
+        "processproperty": "Other",
+        "crossref": "Other",
+        "profile.flatfile": "Profile",
+        "script.processing": "Function",
+        "script.mapping": "Function",
+    }
+
+    # Get the component type from the dictionary and return its simple representation
+    return component_type_map.get(component["type"], component["type"])

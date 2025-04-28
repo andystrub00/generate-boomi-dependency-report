@@ -41,8 +41,8 @@ const componentsData = [
       "e9b2bfa0-9607-4fb5-8ebe-10379a752034"
     ],
     "childComponentIds": [
-      "a07be6ce-13b6-41e1-a983-f7f78503bc20",
       "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
+      "a07be6ce-13b6-41e1-a983-f7f78503bc20",
       "fb128b14-fcbb-4a3b-a9d7-c466c11cd518"
     ],
     "simple_type": "Process"
@@ -90,8 +90,8 @@ const componentsData = [
     "branchId": "QjoyNTU4NQ",
     "containsMetadata": true,
     "parentComponentIds": [
-      "3a8fa0b3-0641-4ecb-aad7-085951ba59df",
-      "26b680b8-4e09-4fd7-8143-872f4eb46e47"
+      "26b680b8-4e09-4fd7-8143-872f4eb46e47",
+      "3a8fa0b3-0641-4ecb-aad7-085951ba59df"
     ],
     "childComponentIds": [],
     "simple_type": "Connector Operation"
@@ -115,8 +115,8 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [
-      "26b680b8-4e09-4fd7-8143-872f4eb46e47",
-      "1d51728d-1417-4e19-a510-71681ee7c3b2"
+      "1d51728d-1417-4e19-a510-71681ee7c3b2",
+      "26b680b8-4e09-4fd7-8143-872f4eb46e47"
     ],
     "simple_type": "Process"
   },
@@ -139,8 +139,8 @@ const componentsData = [
     "branchId": "QjoyNTU4NQ",
     "containsMetadata": true,
     "parentComponentIds": [
-      "3a8fa0b3-0641-4ecb-aad7-085951ba59df",
-      "26b680b8-4e09-4fd7-8143-872f4eb46e47"
+      "26b680b8-4e09-4fd7-8143-872f4eb46e47",
+      "3a8fa0b3-0641-4ecb-aad7-085951ba59df"
     ],
     "childComponentIds": [],
     "simple_type": "Connector"
@@ -213,7 +213,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "Other"
+    "simple_type": "Deployment Configs"
   },
   {
     "@type": "ComponentMetadata",
@@ -234,7 +234,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "certificate.pgp"
+    "simple_type": "Deployment Configs"
   },
   {
     "@type": "ComponentMetadata",
@@ -255,7 +255,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "flowservice"
+    "simple_type": "Connector Operation"
   },
   {
     "@type": "ComponentMetadata",
@@ -276,7 +276,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "Other"
+    "simple_type": "Deployment Configs"
   },
   {
     "@type": "ComponentMetadata",
@@ -318,7 +318,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "customlibrary"
+    "simple_type": "Deployment Configs"
   },
   {
     "@type": "ComponentMetadata",
@@ -339,7 +339,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "profile.db"
+    "simple_type": "Profile"
   },
   {
     "@type": "ComponentMetadata",
@@ -423,7 +423,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "webservice"
+    "simple_type": "Connector Operation"
   },
   {
     "@type": "ComponentMetadata",
@@ -444,7 +444,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "Other"
+    "simple_type": "Deployment Configs"
   },
   {
     "@type": "ComponentMetadata",
@@ -465,7 +465,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "webservice.external"
+    "simple_type": "Connector Operation"
   },
   {
     "@type": "ComponentMetadata",
@@ -597,6 +597,30 @@ const componentsData = [
   },
   {
     "@type": "ComponentMetadata",
+    "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
+    "version": 5,
+    "name": "[Main] Component Reference Hierarchy Testing",
+    "type": "process",
+    "createdDate": "2025-02-28T15:41:54Z",
+    "createdBy": "andy.strubhar@argano.com",
+    "modifiedDate": "2025-03-14T17:24:46Z",
+    "modifiedBy": "andy.strubhar@argano.com",
+    "deleted": false,
+    "currentVersion": true,
+    "folderName": "Atomsphere API",
+    "folderId": "Rjo3NDM2Nzc4",
+    "branchName": "main",
+    "branchId": "QjoyNTU4NQ",
+    "parentComponentIds": [],
+    "childComponentIds": [
+      "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
+      "5d117b3f-240d-4ba5-8a01-b421b5974158"
+    ],
+    "containsMetadata": true,
+    "simple_type": "Process"
+  },
+  {
+    "@type": "ComponentMetadata",
     "componentId": "5d117b3f-240d-4ba5-8a01-b421b5974158",
     "version": 3,
     "name": "map_in_main_folder",
@@ -619,30 +643,6 @@ const componentsData = [
     ],
     "containsMetadata": true,
     "simple_type": "Map"
-  },
-  {
-    "@type": "ComponentMetadata",
-    "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
-    "version": 5,
-    "name": "[Main] Component Reference Hierarchy Testing",
-    "type": "process",
-    "createdDate": "2025-02-28T15:41:54Z",
-    "createdBy": "andy.strubhar@argano.com",
-    "modifiedDate": "2025-03-14T17:24:46Z",
-    "modifiedBy": "andy.strubhar@argano.com",
-    "deleted": false,
-    "currentVersion": true,
-    "folderName": "Atomsphere API",
-    "folderId": "Rjo3NDM2Nzc4",
-    "branchName": "main",
-    "branchId": "QjoyNTU4NQ",
-    "parentComponentIds": [],
-    "childComponentIds": [
-      "5d117b3f-240d-4ba5-8a01-b421b5974158",
-      "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4"
-    ],
-    "containsMetadata": true,
-    "simple_type": "Process"
   },
   {
     "@type": "ComponentMetadata",

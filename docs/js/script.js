@@ -1,6 +1,3 @@
-
-
-
 // Sample data - Replace this with your actual data from Python script
 console.log(componentsData)
 
@@ -15,6 +12,7 @@ const typeGroups = {
     'Map': {shape: 'barrel', color: '#1A535C'},
     'Document Cache': {shape: 'triangle', color: '#F2B880'},
     'Function': {shape: 'rectangle', color: '#3D348B'},
+    'Deployment Configs': {shape: 'octagon', color: '#4B5842'},
     'Other': {shape: 'rectangle', color: '#7D8491'}
 };
 
@@ -398,9 +396,29 @@ function addComponentTypeFilters() {
     const colorBox = document.createElement('div');
     colorBox.className = 'legend-color';
     colorBox.style.backgroundColor = group.color;
-    if (type === 'Process') colorBox.style.borderRadius = '50%';
-    if (type === 'Decision') colorBox.style.transform = 'rotate(45deg)';
-    
+
+    // Apply shape styles based on typeGroups
+    if (group.shape === 'ellipse') {
+        colorBox.style.borderRadius = '50%';
+    } else if (group.shape === 'rhomboid') {
+        colorBox.style.transform = 'skewX(-20deg)';
+    } else if (group.shape === 'roundrectangle') {
+        colorBox.style.borderRadius = '10px';
+    } else if (group.shape === 'triangle') {
+        colorBox.style.width = '0';
+        colorBox.style.height = '0';
+        colorBox.style.borderLeft = '10px solid transparent';
+        colorBox.style.borderRight = '10px solid transparent';
+        colorBox.style.borderBottom = `20px solid ${group.color}`;
+        colorBox.style.backgroundColor = 'transparent'; // Remove background for triangle
+    } else if (group.shape === 'barrel') {
+        colorBox.style.borderRadius = '50% / 25%'; // Barrel-like shape
+    } else if (group.shape === 'octagon') {
+        colorBox.style.clipPath = 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)';
+    } else {
+        colorBox.style.borderRadius = '0'; // Default to rectangle
+    }
+
     const label = document.createElement('label');
     label.htmlFor = checkboxId;
     
@@ -448,15 +466,14 @@ function addComponentTypeFilters() {
     
     // Add the filter container after the legend
     const sidebar = document.querySelector('.sidebar');
-    const legend = document.querySelector('.legend');
-    sidebar.insertBefore(filterContainer, legend.nextSibling);
+    const component_details = document.querySelector('.component-details');
+    sidebar.insertBefore(filterContainer, component_details);
 }
 
 function updateTypeFilters() {
     const selectedTypes = Array.from(document.querySelectorAll('.type-filters input[type="checkbox"]:checked'))
     .map(cb => cb.dataset.type);
 
-    console.log("Hello World!");
     console.log(typeof cy.nodes);
     
     cy.nodes().forEach(node => {
@@ -483,6 +500,3 @@ createGraph(componentsData);
 
 // Add type filters after creating the graph
 addComponentTypeFilters();
-
-
-

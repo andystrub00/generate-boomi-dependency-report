@@ -289,7 +289,7 @@ function createGraph(data) {
     });
     
 
-    
+    /*
     // Save/Load Layout
     document.getElementById('save-layout').addEventListener('click', () => {
         const positions = {};
@@ -315,6 +315,7 @@ function createGraph(data) {
         alert('No saved layout found!');
         }
     });
+    */
     
     
     // Export PNG

@@ -182,4 +182,4 @@ def generate_simple_component_type(component: dict) -> str:
     }
 
     # Get the component type from the dictionary and return its simple representation
-    return component_type_map.get(component["type"], component["type"])
+    return component_type_map.get(component["type"], "Other")

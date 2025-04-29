@@ -1,7 +1,8 @@
+// Declare cy as a global variable
+let cy;
+
 // Sample data - Replace this with your actual data from Python script
 console.log(componentsData)
-
-
 
 // Group mapping for component types
 const typeGroups = {
@@ -23,164 +24,163 @@ function createGraph(data) {
     
     // Add nodes
     data.forEach(comp => {
-    const group = typeGroups[comp.simple_type] || typeGroups['Other'];
-    elements.push({
-        data: {
-        id: comp.componentId,
-        label: comp.name,
-        type: comp.type,
-        version: comp.version,
-        filepath: comp.folderName,
-        backgroundColor: group.color,
-        shape: group.shape
-        }
-    });
+        const group = typeGroups[comp.simple_type] || typeGroups['Other'];
+        elements.push({
+            data: {
+                id: comp.componentId,
+                label: comp.name,
+                type: comp.type,
+                version: comp.version,
+                filepath: comp.folderName,
+                backgroundColor: group.color,
+                shape: group.shape,
+                simpleType: comp.simple_type
+            }
+        });
     });
     
     // Add edges
     data.forEach(comp => {
-    comp.childComponentIds.forEach(childId => {
-        elements.push({
-        data: {
-            id: `${comp.componentId}-${childId}`,
-            source: comp.componentId,
-            target: childId
-        }
+        comp.childComponentIds.forEach(childId => {
+            elements.push({
+                data: {
+                    id: `${comp.componentId}-${childId}`,
+                    source: comp.componentId,
+                    target: childId
+                }
+            });
         });
-    });
     });
     
     // Initialize Cytoscape
-    const cy = cytoscape({
-    container: document.getElementById('cy'),
-    elements: elements,
-
-    // Inside the createGraph function, update the style section:
-    style: [
-        {
-        selector: 'node',
-        style: {
-            'label': 'data(label)',
-            'background-color': 'data(backgroundColor)',
-            'shape': 'data(shape)',
-            'width': '100px',  // Increased width
-            'height': '80px',  // Increased height
-            'text-valign': 'center',
-            'text-halign': 'center',
-            'text-wrap': 'wrap',
-            'font-size': '12px',  // Increased font size
-            'text-max-width': '90px',  // Increased text width
-            'color': '#000000',  // Black text for better readability
-            'text-outline-color': '#ffffff',  // White outline
-            'text-outline-width': '1px',  // Small outline for contrast
-            'text-background-color': 'rgba(255, 255, 255, 0.7)',  // Semi-transparent white background
-            'text-background-opacity': 1,
-            'text-background-shape': 'roundrectangle',
-            'text-background-padding': '3px'
+    cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements: elements,
+        style: [
+            {
+            selector: 'node',
+            style: {
+                'label': 'data(label)',
+                'background-color': 'data(backgroundColor)',
+                'shape': 'data(shape)',
+                'width': '100px',  // Increased width
+                'height': '80px',  // Increased height
+                'text-valign': 'center',
+                'text-halign': 'center',
+                'text-wrap': 'wrap',
+                'font-size': '12px',  // Increased font size
+                'text-max-width': '90px',  // Increased text width
+                'color': '#000000',  // Black text for better readability
+                'text-outline-color': '#ffffff',  // White outline
+                'text-outline-width': '1px',  // Small outline for contrast
+                'text-background-color': 'rgba(255, 255, 255, 0.7)',  // Semi-transparent white background
+                'text-background-opacity': 1,
+                'text-background-shape': 'roundrectangle',
+                'text-background-padding': '3px'
+            }
+            },
+            {
+            selector: 'edge',
+            style: {
+                'width': 3,
+                'line-color': '#888',  // Slightly darker gray
+                'target-arrow-color': '#888',
+                'target-arrow-shape': 'triangle',
+                'curve-style': 'bezier',
+                'arrow-scale': 1.5  // Larger arrows
+            }
+            },
+            {
+            selector: '.highlighted',
+            style: {
+                'line-color': '#ff0000',
+                'target-arrow-color': '#ff0000',
+                'z-index': 999,
+                'width': 4  // Thicker highlighted edges
+            }
+            },
+            {
+            selector: '.selected',
+            style: {
+                'border-width': '4px',
+                'border-color': '#3366ff',
+                'border-opacity': 1
+            }
+            },
+            // Add specific styles for different shapes
+            {
+            selector: 'node[shape="ellipse"]',  // Process
+            style: {
+                'shape': 'ellipse',
+                'width': '110px',  // Wider for ellipses
+                'height': '80px',
+            }
+            },
+            {
+            selector: 'node[shape="rectangle"]',  // Connector and Others
+            style: {
+                'shape': 'rectangle',
+                'width': '100px',
+                'height': '70px',
+            }
+            },
+            {
+            selector: 'node[shape="roundrectangle"]',  // Map
+            style: {
+                'shape': 'roundrectangle',
+                'width': '110px',
+                'height': '70px',
+                'border-radius': '10px'
+            }
+            },
+            {
+            selector: 'node[shape="rhomboid"]',  // Decision
+            style: {
+                'shape': 'rhomboid',
+                'width': '120px',  // Wider for rhomboids
+                'height': '70px',
+            }
+            },
+            {
+            selector: 'node[shape="barrel"]',  // Flow Service
+            style: {
+                'shape': 'barrel',
+                'width': '110px',
+                'height': '80px',
+            }
+            },
+            {
+            selector: 'node[shape="triangle"]',  // Trigger
+            style: {
+                'shape': 'triangle',
+                'width': '100px',
+                'height': '90px',  // Taller for triangles
+            }
+            }
+        ],
+        layout: {
+            name: 'cose',
+            idealEdgeLength: 100,
+            nodeOverlap: 20,
+            refresh: 20,
+            fit: true,
+            padding: 30,
+            randomize: false,
+            componentSpacing: 100,
+            nodeRepulsion: 400000,
+            edgeElasticity: 100,
+            nestingFactor: 5,
+            gravity: 80,
+            numIter: 1000,
+            initialTemp: 200,
+            coolingFactor: 0.95,
+            minTemp: 1.0
         }
-        },
-        {
-        selector: 'edge',
-        style: {
-            'width': 3,
-            'line-color': '#888',  // Slightly darker gray
-            'target-arrow-color': '#888',
-            'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier',
-            'arrow-scale': 1.5  // Larger arrows
-        }
-        },
-        {
-        selector: '.highlighted',
-        style: {
-            'line-color': '#ff0000',
-            'target-arrow-color': '#ff0000',
-            'z-index': 999,
-            'width': 4  // Thicker highlighted edges
-        }
-        },
-        {
-        selector: '.selected',
-        style: {
-            'border-width': '4px',
-            'border-color': '#3366ff',
-            'border-opacity': 1
-        }
-        },
-        // Add specific styles for different shapes
-        {
-        selector: 'node[shape="ellipse"]',  // Process
-        style: {
-            'shape': 'ellipse',
-            'width': '110px',  // Wider for ellipses
-            'height': '80px',
-        }
-        },
-        {
-        selector: 'node[shape="rectangle"]',  // Connector and Others
-        style: {
-            'shape': 'rectangle',
-            'width': '100px',
-            'height': '70px',
-        }
-        },
-        {
-        selector: 'node[shape="roundrectangle"]',  // Map
-        style: {
-            'shape': 'roundrectangle',
-            'width': '110px',
-            'height': '70px',
-            'border-radius': '10px'
-        }
-        },
-        {
-        selector: 'node[shape="rhomboid"]',  // Decision
-        style: {
-            'shape': 'rhomboid',
-            'width': '120px',  // Wider for rhomboids
-            'height': '70px',
-        }
-        },
-        {
-        selector: 'node[shape="barrel"]',  // Flow Service
-        style: {
-            'shape': 'barrel',
-            'width': '110px',
-            'height': '80px',
-        }
-        },
-        {
-        selector: 'node[shape="triangle"]',  // Trigger
-        style: {
-            'shape': 'triangle',
-            'width': '100px',
-            'height': '90px',  // Taller for triangles
-        }
-        }
-    ],
-    layout: {
-        name: 'cose',
-        idealEdgeLength: 100,
-        nodeOverlap: 20,
-        refresh: 20,
-        fit: true,
-        padding: 30,
-        randomize: false,
-        componentSpacing: 100,
-        nodeRepulsion: 400000,
-        edgeElasticity: 100,
-        nestingFactor: 5,
-        gravity: 80,
-        numIter: 1000,
-        initialTemp: 200,
-        coolingFactor: 0.95,
-        minTemp: 1.0
-    }
     });
     
     // Update stats
     document.getElementById('stats').textContent = `Components: ${data.length} | Connections: ${cy.edges().length}`;
-    
+
     // Node selection
     cy.on('tap', 'node', function(evt) {
         const node = evt.target;
@@ -374,6 +374,35 @@ function createGraph(data) {
     return cy;
 
 }
+// Function to toggle the visibility of nodes with no edges
+function toggleIsolatedNodes() {
+    // Get isolated nodes (nodes with no edges) and exclude nodes with the 'filtered-out' class
+    const isolatedNodes = cy.nodes().filter(node => node.degree() === 0 && !node.hasClass('filtered-out'));
+
+    isolatedNodes.forEach(node => {
+        if (node.visible()) {
+            // Hide the isolated node
+            cy.style()
+                .selector(`#${node.id()}`)
+                .style({
+                    'visibility': 'hidden'  // Hide the node
+                })
+                .update();
+        } else {
+            // Show the isolated node
+            cy.style()
+                .selector(`#${node.id()}`)
+                .style({
+                    'visibility': 'visible'  // Show the node
+                })
+                .update();
+        }
+    });
+}
+
+// Add event listener to the button
+document.getElementById('toggle-isolated-nodes').addEventListener('click', toggleIsolatedNodes);
+
     
 // Function to handle filtering by component type
 function addComponentTypeFilters() {
@@ -470,21 +499,64 @@ function addComponentTypeFilters() {
     sidebar.insertBefore(filterContainer, component_details);
 }
 
+// Update filters
 function updateTypeFilters() {
     const selectedTypes = Array.from(document.querySelectorAll('.type-filters input[type="checkbox"]:checked'))
-    .map(cb => cb.dataset.type);
+        .map(cb => cb.dataset.type);
 
-    console.log(typeof cy.nodes);
-    
+    // Iterate over each node and apply the 'filtered-out' class based on selection
     cy.nodes().forEach(node => {
-    const type = node.data('type');
-    if (selectedTypes.includes(type)) {
-        node.removeClass('filtered-out');
-    } else {
-        node.addClass('filtered-out');
-    }
+        const type = node.data('simpleType');
+        if (selectedTypes.includes(type)) {
+            node.removeClass('filtered-out');
+            // Ensure the node is visible
+            cy.style()
+                .selector(`#${node.id()}`)
+                .style({
+                    'visibility': 'visible'  // Make the node visible
+                })
+                .update();
+
+            // Ensure edges connected to this node are visible
+            node.neighborhood('edge').forEach(edge => {
+                const sourceNode = edge.source();
+                const targetNode = edge.target();
+
+                // Only show the edge if both the source and target nodes are visible
+                if (!sourceNode.hasClass('filtered-out') && !targetNode.hasClass('filtered-out')) {
+                    cy.style()
+                        .selector(`#${edge.id()}`)
+                        .style({
+                            'visibility': 'visible'  // Make the edge visible
+                        })
+                        .update();
+                }
+            });
+        } else {
+            node.addClass('filtered-out');
+            // Hide the node
+            cy.style()
+                .selector(`#${node.id()}`)
+                .style({
+                    'visibility': 'hidden'  // Hide the node
+                })
+                .update();
+
+            // Hide edges connected to this node
+            node.neighborhood('edge').forEach(edge => {
+                cy.style()
+                    .selector(`#${edge.id()}`)
+                    .style({
+                        'visibility': 'hidden'  // Hide the edge
+                    })
+                    .update();
+            });
+        }
     });
 }
+
+
+
 
 // Add style for filtered-out nodes
 const filterStyle = document.createElement('style');

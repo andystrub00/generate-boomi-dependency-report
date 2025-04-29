@@ -41,8 +41,8 @@ const componentsData = [
       "e9b2bfa0-9607-4fb5-8ebe-10379a752034"
     ],
     "childComponentIds": [
-      "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
       "a07be6ce-13b6-41e1-a983-f7f78503bc20",
+      "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
       "fb128b14-fcbb-4a3b-a9d7-c466c11cd518"
     ],
     "simple_type": "Process"
@@ -381,7 +381,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "xslt"
+    "simple_type": "Other"
   },
   {
     "@type": "ComponentMetadata",
@@ -572,7 +572,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "certificate"
+    "simple_type": "Other"
   },
   {
     "@type": "ComponentMetadata",
@@ -593,31 +593,7 @@ const componentsData = [
     "containsMetadata": true,
     "parentComponentIds": [],
     "childComponentIds": [],
-    "simple_type": "tporganization"
-  },
-  {
-    "@type": "ComponentMetadata",
-    "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
-    "version": 5,
-    "name": "[Main] Component Reference Hierarchy Testing",
-    "type": "process",
-    "createdDate": "2025-02-28T15:41:54Z",
-    "createdBy": "andy.strubhar@argano.com",
-    "modifiedDate": "2025-03-14T17:24:46Z",
-    "modifiedBy": "andy.strubhar@argano.com",
-    "deleted": false,
-    "currentVersion": true,
-    "folderName": "Atomsphere API",
-    "folderId": "Rjo3NDM2Nzc4",
-    "branchName": "main",
-    "branchId": "QjoyNTU4NQ",
-    "parentComponentIds": [],
-    "childComponentIds": [
-      "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4",
-      "5d117b3f-240d-4ba5-8a01-b421b5974158"
-    ],
-    "containsMetadata": true,
-    "simple_type": "Process"
+    "simple_type": "Other"
   },
   {
     "@type": "ComponentMetadata",
@@ -643,6 +619,30 @@ const componentsData = [
     ],
     "containsMetadata": true,
     "simple_type": "Map"
+  },
+  {
+    "@type": "ComponentMetadata",
+    "componentId": "e3e4fc78-21bd-49ac-91f3-eaf06d011254",
+    "version": 5,
+    "name": "[Main] Component Reference Hierarchy Testing",
+    "type": "process",
+    "createdDate": "2025-02-28T15:41:54Z",
+    "createdBy": "andy.strubhar@argano.com",
+    "modifiedDate": "2025-03-14T17:24:46Z",
+    "modifiedBy": "andy.strubhar@argano.com",
+    "deleted": false,
+    "currentVersion": true,
+    "folderName": "Atomsphere API",
+    "folderId": "Rjo3NDM2Nzc4",
+    "branchName": "main",
+    "branchId": "QjoyNTU4NQ",
+    "parentComponentIds": [],
+    "childComponentIds": [
+      "5d117b3f-240d-4ba5-8a01-b421b5974158",
+      "04b0cc6d-2a36-44a5-8d0f-c8ccf255caf4"
+    ],
+    "containsMetadata": true,
+    "simple_type": "Process"
   },
   {
     "@type": "ComponentMetadata",

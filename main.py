@@ -24,6 +24,8 @@ from utils.temp_utils import (
     spoof_command_line_args,
     write_to_debug_log,
 )
+
+import time
 import json
 
 
@@ -102,4 +104,7 @@ def main():
 
 if __name__ == "__main__":
 
+    start_time = time.time()
     main()
+
+    print(f"--- {time.time() - start_time} seconds ---")

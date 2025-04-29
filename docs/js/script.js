@@ -107,6 +107,14 @@ function createGraph(data) {
                 'border-opacity': 1
             }
             },
+            {
+                selector: '.faded',
+                style: {
+                    'opacity': 0.2, // Make the node and edge very transparent
+                    'text-opacity': 0.2, // Fade the label as well
+                    'z-index': 0 // Push faded elements to the background
+                }
+            },
             // Add specific styles for different shapes
             {
             selector: 'node[shape="ellipse"]',  // Process
@@ -259,24 +267,28 @@ function createGraph(data) {
         const query = e.target.value.toLowerCase();
         
         if (query.length < 2) {
-        cy.elements().removeClass('faded');
-        return;
+            cy.elements().removeClass('faded');
+            return;
         }
         
         cy.nodes().forEach(node => {
-        const name = node.data('label').toLowerCase();
-        const type = node.data('type').toLowerCase();
-        const path = node.data('filepath').toLowerCase();
-        
-        if (name.includes(query) || type.includes(query) || path.includes(query)) {
-            node.removeClass('faded');
-            node.connectedEdges().removeClass('faded');
-        } else {
-            node.addClass('faded');
-            node.connectedEdges().addClass('faded');
-        }
+            const name = node.data('label').toLowerCase();
+            const type = node.data('type').toLowerCase();
+            const path = node.data('filepath').toLowerCase();
+            
+            if (name.includes(query) || type.includes(query) || path.includes(query)) {
+                console.log(`Node matched: ${node.data('label')}`); // Debugging log
+                node.removeClass('faded');
+                node.connectedEdges().removeClass('faded');
+            } else {
+                //console.log(`Node matched: ${node.data('label')}`); // Debugging log
+                node.addClass('faded');
+                node.connectedEdges().addClass('faded');
+            }
         });
     });
+    
+
     
     // Save/Load Layout
     document.getElementById('save-layout').addEventListener('click', () => {
@@ -303,6 +315,7 @@ function createGraph(data) {
         alert('No saved layout found!');
         }
     });
+    
     
     // Export PNG
     document.getElementById('export-png').addEventListener('click', () => {
@@ -374,14 +387,12 @@ function createGraph(data) {
     return cy;
 
 }
-// Function to toggle the visibility of nodes with no edges
-function toggleIsolatedNodes() {
-    // Get isolated nodes (nodes with no edges) and exclude nodes with the 'filtered-out' class
-    const isolatedNodes = cy.nodes().filter(node => node.degree() === 0 && !node.hasClass('filtered-out'));
 
-    isolatedNodes.forEach(node => {
-        if (node.visible()) {
-            // Hide the isolated node
+
+function updateNodeVisibility() {
+    cy.nodes().forEach(node => {
+        if (node.hasClass('filtered-out') || node.hasClass('hidden-isolated')) {
+            // Ensure the node is hidden if it has the filtered-out or hidden-isolated class
             cy.style()
                 .selector(`#${node.id()}`)
                 .style({
@@ -389,15 +400,57 @@ function toggleIsolatedNodes() {
                 })
                 .update();
         } else {
-            // Show the isolated node
+            // Ensure the node is visible if it doesn't have filtered-out or hidden-isolated classes
             cy.style()
                 .selector(`#${node.id()}`)
                 .style({
-                    'visibility': 'visible'  // Show the node
+                    'visibility': 'visible'  // Make the node visible
                 })
                 .update();
         }
     });
+}
+
+
+// Global state to track whether isolated nodes are hidden
+let isolatedNodesHidden = false;
+
+// Function to toggle the visibility of nodes with no edges
+function toggleIsolatedNodes() {
+    // Get all isolated nodes (nodes with no edges)
+    const isolatedNodes = cy.nodes().filter(node => node.degree() === 0);
+
+    if (isolatedNodesHidden) {
+        // Show all isolated nodes unless they have the 'filtered-out' class
+        isolatedNodes.forEach(node => {
+            /*
+            if (!node.hasClass('filtered-out')) {
+                node.removeClass('hidden-isolated');
+                cy.style()
+                    .selector(`#${node.id()}`)
+                    .style({
+                        'visibility': 'visible'  // Make the node visible
+                    })
+                    .update();
+            }
+            */
+            node.removeClass('hidden-isolated');
+        });
+        isolatedNodesHidden = false; // Update state
+        updateNodeVisibility(); // Update visibility of all nodes
+    } else {
+        // Hide all isolated nodes
+        isolatedNodes.forEach(node => {
+            node.addClass('hidden-isolated');
+            cy.style()
+                .selector(`#${node.id()}`)
+                .style({
+                    'visibility': 'hidden'  // Hide the node
+                })
+                .update();
+        });
+        isolatedNodesHidden = true; // Update state
+    }
 }
 
 // Add event listener to the button
@@ -509,13 +562,15 @@ function updateTypeFilters() {
         const type = node.data('simpleType');
         if (selectedTypes.includes(type)) {
             node.removeClass('filtered-out');
-            // Ensure the node is visible
-            cy.style()
-                .selector(`#${node.id()}`)
-                .style({
-                    'visibility': 'visible'  // Make the node visible
-                })
-                .update();
+            // Ensure the node is visible unless it's hidden due to isolation
+            if (!node.hasClass('hidden-isolated')) {
+                cy.style()
+                    .selector(`#${node.id()}`)
+                    .style({
+                        'visibility': 'visible'  // Make the node visible
+                    })
+                    .update();
+            }
 
             // Ensure edges connected to this node are visible
             node.neighborhood('edge').forEach(edge => {
@@ -572,3 +627,22 @@ createGraph(componentsData);
 
 // Add type filters after creating the graph
 addComponentTypeFilters();
+
+// Toggle the Isolated Nodes to be hidden initially
+toggleIsolatedNodes();
+
+
+
+
+function logNodeStatus(){
+    console.log(cy.nodes());
+    console.log(`timestamp,nodeLabel,filtered-out,hidden-isolated`);
+
+    cy.nodes().forEach(node => {
+        console.log(`,${node.data('label')},${node.hasClass('filtered-out')},${node.hasClass('hidden-isolated')}`);
+    });
+}
+
+
+// Add event listener to the button
+document.getElementById('log-node-status').addEventListener('click', logNodeStatus);

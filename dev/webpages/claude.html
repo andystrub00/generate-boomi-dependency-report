@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Hierarchy Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="css/claude.css">
+</head>
+<body>
+    <div id="sidebar">
+        <h2>Component Hierarchy</h2>
+        
+        <div class="filter-section">
+            <div class="filter-title">Filter by Type</div>
+            <div id="type-filters"></div>
+        </div>
+        
+        <button id="toggle-isolated" class="button">Show Isolated Components</button>
+        <button id="export-isolated" class="button">Export Isolated Components</button>
+        <button id="reorganize" class="button">Reorganize Layout</button>
+        
+        <div style="margin-top: 20px;">
+            <div>Zoom: <span id="zoom-level">100%</span></div>
+            <div>
+                <button id="zoom-in" class="button">+</button>
+                <button id="zoom-out" class="button">-</button>
+                <button id="zoom-reset" class="button">Reset</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="main">
+        <svg id="visualization"></svg>
+        
+        <div id="detail-panel" class="detail-panel">
+            <div class="detail-title">Component Details</div>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+    <script src="data/component_data.js"></script>
+    <script src="js/claude.js"></script>
+</body>
+</html>

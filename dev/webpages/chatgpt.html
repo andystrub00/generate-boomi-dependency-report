@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Component Hierarchy Visualizer</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/cytoscape@3.24.0/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+    <script>
+        cytoscape.use(window.cytoscapeDagre);
+    </script>
+    </head>
+<body>
+  <div class="controls">
+    <h2>Filter by Type</h2>
+    <div id="typeFilters"></div>
+    <button id="toggleIsolated">Toggle Isolated Components</button>
+    <button id="exportIsolated">Export Isolated as CSV</button>
+    <button id="reformatGraph">Reformat Graph</button>
+  </div>
+
+  <div class="main-container">
+    <div id="cy"></div>
+    <div class="info-panel" id="infoPanel">
+      <h3>Component Info</h3>
+      <p><strong>Name:</strong> <span id="infoName"></span></p>
+      <p><strong>Type:</strong> <span id="infoType"></span></p>
+      <p><strong>Version:</strong> <span id="infoVersion"></span></p>
+      <p><strong>Path:</strong> <span id="infoPath"></span></p>
+    </div>
+  </div>
+
+  <script src="data/component_data.js"></script>
+  <script src="js/chatgpt.js"></script>
+</body>
+</html>

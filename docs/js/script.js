@@ -213,13 +213,7 @@ function createGraph(data) {
           document.getElementById('component-details').classList.remove('visible');
         }
       });
-    
-    // Reset view button
-    document.getElementById('reset').addEventListener('click', () => {
-    cy.fit();
-    cy.elements().removeClass('highlighted selected');
-    document.getElementById('component-details').classList.remove('visible');
-    });
+
     
     // Expand all button
     document.getElementById('expand-all').addEventListener('click', () => {
@@ -287,36 +281,6 @@ function createGraph(data) {
             }
         });
     });
-    
-
-    /*
-    // Save/Load Layout
-    document.getElementById('save-layout').addEventListener('click', () => {
-        const positions = {};
-        cy.nodes().forEach(node => {
-        positions[node.id()] = node.position();
-        });
-        localStorage.setItem('boomiDiagramLayout', JSON.stringify(positions));
-        alert('Layout saved!');
-    });
-    
-    document.getElementById('load-layout').addEventListener('click', () => {
-        const savedLayout = localStorage.getItem('boomiDiagramLayout');
-        if (savedLayout) {
-        const positions = JSON.parse(savedLayout);
-        cy.nodes().forEach(node => {
-            if (positions[node.id()]) {
-            node.position(positions[node.id()]);
-            }
-        });
-        cy.fit();
-        alert('Layout loaded!');
-        } else {
-        alert('No saved layout found!');
-        }
-    });
-    */
-    
     
     // Export PNG
     document.getElementById('export-png').addEventListener('click', () => {
@@ -453,9 +417,6 @@ function toggleIsolatedNodes() {
         isolatedNodesHidden = true; // Update state
     }
 }
-
-// Add event listener to the button
-document.getElementById('toggle-isolated-nodes').addEventListener('click', toggleIsolatedNodes);
 
     
 // Function to handle filtering by component type
@@ -611,7 +572,28 @@ function updateTypeFilters() {
     });
 }
 
+function resetView() {
+    // Filter out hidden nodes (nodes with 'filtered-out' or 'hidden-isolated' classes)
+    const visibleNodes = cy.nodes().filter(node => 
+        !node.hasClass('filtered-out') && !node.hasClass('hidden-isolated')
+    );
 
+    // Apply the breadthfirst layout to visible nodes
+    cy.layout({
+        name: 'breadthfirst',
+        fit: false, // Do not automatically fit the layout to the viewport
+        directed: true, // Arrange nodes in a directed hierarchical format
+        padding: 50, // Add extra padding around the layout
+        spacingFactor: 2, // Increase spacing between nodes to avoid overlap
+        avoidOverlap: true, // Ensure nodes do not overlap
+        roots: visibleNodes.roots(), // Start layout from root nodes
+        animate: true, // Animate the layout transition
+        animationDuration: 500, // Duration of the animation
+    }).run();
+
+    // Fit the graph to the viewport after the layout is applied
+    cy.fit(visibleNodes, 50); // Add padding around the visible nodes
+}
 
 
 // Add style for filtered-out nodes
@@ -625,6 +607,15 @@ document.head.appendChild(filterStyle);
 
 // Initialize with sample data
 createGraph(componentsData);
+
+
+// Add event listener to the button
+document.getElementById('toggle-isolated-nodes').addEventListener('click', toggleIsolatedNodes);
+
+// Add event listener to the button
+document.getElementById('reset-view').addEventListener('click', resetView);
+
+
 
 // Add type filters after creating the graph
 addComponentTypeFilters();

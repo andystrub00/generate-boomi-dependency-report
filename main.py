@@ -38,7 +38,7 @@ def main():
     # TODO - switch back to normal command line parser
     # args = parse_command_line_args()
     args = spoof_command_line_args(
-        folder_name="TEST SUBFOLDER",
+        folder_name="Rothys MDH Demo",
         folder_id=None,
         parse_subfolders=True,
     )

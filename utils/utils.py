@@ -51,6 +51,8 @@ def parse_command_line_args():
     -f, --folder_name: Optional; Name of the folder.
     -i, --folder_id: Optional; ID of the folder.
     -p, --parse_subfolders: Optional; Boolean flag to determine if subfolders should be parsed (default: True).
+    -c, --component_id: Optional, ID of a specific component to process.
+    -n, --nodes_to_process: Optional, Number of nodes above the component to process (default: 1)
 
     Returns:
     argparse.Namespace: Parsed arguments.
@@ -68,11 +70,28 @@ def parse_command_line_args():
         default=True,  # Defaults to True if the argument is not provided
         help="Whether to parse subfolders (default: True)",
     )
+    parser.add_argument(
+        "-c", "--component_id", type=str, help="ID of a specific component to process."
+    )
+    parser.add_argument(
+        "-n",
+        "--nodes_to_process",
+        type=int,
+        default=1,
+        help="Number of nodes above the component to process (default: 1)",
+    )
 
     args = parser.parse_args()
 
-    if not args.folder_name and not args.folder_id:
-        parser.error("At least one of --folder_name or --folder_id must be provided.")
+    if not args.folder_name and not args.folder_id and not args.component_id:
+        parser.error(
+            "At least one of --folder_name, --folder_id or --component_id must be provided."
+        )
+
+    elif (args.folder_name or args.folder_id) and args.component_id:
+        parser.error(
+            "If --folder_name or --folder_id is provided, --component_id cannot be used."
+        )
 
     return args
 

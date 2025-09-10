@@ -52,7 +52,7 @@ def parse_command_line_args():
     -i, --folder_id: Optional; ID of the folder.
     -p, --parse_subfolders: Optional; Boolean flag to determine if subfolders should be parsed (default: True).
     -c, --component_id: Optional, ID of a specific component to process.
-    -n, --nodes_to_process: Optional, Number of nodes above the component to process (default: 1)
+    -n, --nodes_to_process: Optional, Number of nodes above the component to process, pass 0 to parse entire tree (default: 0)
 
     Returns:
     argparse.Namespace: Parsed arguments.
@@ -77,8 +77,8 @@ def parse_command_line_args():
         "-n",
         "--nodes_to_process",
         type=int,
-        default=1,
-        help="Number of nodes above the component to process (default: 1)",
+        default=0,
+        help="Number of nodes above the component to process, pass 0 to parse entire tree (default: 0)",
     )
 
     args = parser.parse_args()
@@ -201,4 +201,5 @@ def generate_simple_component_type(component: dict) -> str:
     }
 
     # Get the component type from the dictionary and return its simple representation
+
     return component_type_map.get(component["type"], "Other")

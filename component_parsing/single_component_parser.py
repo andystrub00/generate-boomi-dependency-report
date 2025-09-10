@@ -2,6 +2,7 @@ from component_parsing.component_parsing import (
     get_component_metadata,
     get_parent_component_references,
     run_non_folder_tree_comps_to_ground,
+    run_non_folder_tree_comps_to_n_nodes,
 )
 from utils.component_store import ComponentStore
 
@@ -28,7 +29,14 @@ def parse_single_component_parent_info(runtime_vars: dict):
             child_component_id, parent_ids=parent_component_ids
         )
 
-    # Get all the components outside of the folder tree that either reference or are referenced by something inside the folder tree
-    run_non_folder_tree_comps_to_ground(runtime_vars, component_store)
+    parent_nodes_to_process = runtime_vars["nodes_to_process"]
+
+    if parent_nodes_to_process <= 0:
+        # If nodes_to_process is 0 or negative, process to the root
+        # Get all the components outside of the folder tree that either reference or are referenced by something inside the folder tree
+        run_non_folder_tree_comps_to_ground(runtime_vars, component_store)
+    else:
+        # If nodes_to_process is greater than 1, process the specified number of generations
+        run_non_folder_tree_comps_to_n_nodes(runtime_vars, component_store)
 
     return component_store

@@ -367,3 +367,65 @@ def run_non_folder_tree_comps_to_ground(runtime_vars: dict, component_store) -> 
         # Update the component store with the parent-child relationships
         for parent_comp_id, child_comp_ids in non_folder_tree_parents.items():
             component_store.update_relationships(parent_comp_id, child_comp_ids)
+
+
+def run_non_folder_tree_comps_to_n_nodes(runtime_vars: dict, component_store) -> None:
+    """
+    Process non-folder tree components to retrieve their metadata and parent relationships,
+    and update the component store accordingly.
+
+    Parameters
+    ----------
+    runtime_vars : dict
+        Dictionary of runtime variables needed for API requests.
+    component_store : ComponentStore
+        An instance of the ComponentStore class that manages the storage and retrieval of component data.
+
+    Returns
+    -------
+    None
+    """
+
+    # Flag to check if there are non-folder tree components left to process
+    non_folder_tree_comps_exist = True
+    leaves_to_parse = runtime_vars["nodes_to_process"] - 1
+
+    while non_folder_tree_comps_exist and leaves_to_parse > 0:
+
+        # Retrieve components without metadata from the component store
+        non_folder_tree_comps = component_store.get_without_metadata()
+
+        # If no components are left, exit the loop
+        if len(non_folder_tree_comps) == 0:
+            non_folder_tree_comps_exist = False
+            break
+
+        # Get metadata and parent references for the non-folder tree components
+        non_folder_tree_metadata, non_folder_tree_parents = (
+            get_metadata_and_parents_of_components(runtime_vars, non_folder_tree_comps)
+        )
+
+        # Update the component store with the retrieved metadata
+        for comp_metadata in non_folder_tree_metadata:
+            component_store.update_component_metadata(comp_metadata)
+
+        # Update the component store with the parent-child relationships
+        for parent_comp_id, child_comp_ids in non_folder_tree_parents.items():
+            component_store.update_relationships(parent_comp_id, child_comp_ids)
+
+        # Decrement the leaves_to_parse counter
+        leaves_to_parse -= 1
+
+    # Retrieve components without metadata from the component store
+    non_folder_tree_comps = component_store.get_without_metadata()
+
+    # If no components are left, exit the loop
+    if len(non_folder_tree_comps) != 0:
+        # Get metadata and parent references for the non-folder tree components
+        non_folder_tree_metadata, non_folder_tree_parents = (
+            get_metadata_and_parents_of_components(runtime_vars, non_folder_tree_comps)
+        )
+
+        # Update the component store with the retrieved metadata
+        for comp_metadata in non_folder_tree_metadata:
+            component_store.update_component_metadata(comp_metadata)

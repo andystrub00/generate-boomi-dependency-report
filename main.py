@@ -93,11 +93,7 @@ def folder_query(runtime_vars: dict):
 
 def main():
 
-    # Fetch environment variables
-    env_vars = fetch_env_variables()
-
     # Get command line arguments
-    # TODO - switch back to normal command line parser
     args = parse_command_line_args()
 
     """
@@ -107,6 +103,9 @@ def main():
         parse_subfolders=True,
     )
     """
+
+    # Fetch environment variables
+    env_vars = fetch_env_variables(env_filename=f"{args.account_name}.env")
 
     # Initialize dictionary of runtime variablesm including environment variables, command line arguments, and API variables
     runtime_vars = init_runtime_vars(env_vars, args)

@@ -24,11 +24,6 @@ class BoomiMetadataExtractor:
         self.account_id = account_id
         self.base_url = f"https://api.boomi.com/api/rest/v1/{account_id}"
 
-        # Create basic auth header
-        auth_string = f"{username}:{password}"
-        auth_bytes = auth_string.encode("ascii")
-        base64_auth = base64.b64encode(auth_bytes).decode("ascii")
-
         self.headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",

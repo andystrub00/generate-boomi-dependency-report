@@ -48,6 +48,8 @@ def parse_command_line_args():
     Parses command-line arguments for folder processing.
 
     Arguments:
+    -a, --account_name: Optional; Boomi account nickname which will be appended to the .env filename,
+                            e.g -a younglife will look for env vars in younglife.env
     -f, --folder_name: Optional; Name of the folder.
     -i, --folder_id: Optional; ID of the folder.
     -p, --parse_subfolders: Optional; Boolean flag to determine if subfolders should be parsed (default: True).
@@ -58,7 +60,13 @@ def parse_command_line_args():
     argparse.Namespace: Parsed arguments.
     """
     parser = argparse.ArgumentParser(description="Process folder information.")
-
+    parser.add_argument(
+        "-a",
+        "--account_name",
+        type=str,
+        default="",
+        help="Boomi account name for env file, e.g -a argano will look for argano.env",
+    )
     parser.add_argument("-f", "--folder_name", type=str, help="Name of the folder")
     parser.add_argument("-i", "--folder_id", type=str, help="ID of the folder")
     parser.add_argument(

@@ -1,34 +1,11 @@
-import requests
-import base64
-import xml.etree.ElementTree as ET
 import csv
-import json
-from typing import List, Dict, Any
+import requests
+import argparse
 from datetime import datetime
-
-
-def chunk_list(original_list: list, chunk_size: int) -> list[list]:
-    """
-    The 'chunk_list' function takes a list and a chunk size as input, and returns a list of sublists
-    where each sublist contains elements from the original list based on the specified chunk size.
-
-    Parameters
-    ----------
-    original_list : list
-        A list of elements that you want to chunk into smaller lists.
-    chunk_size : int
-        The 'chunk_size' parameter specifies the number of elements you want in each chunk when splitting
-    the original list into smaller chunks.
-
-    Returns
-    -------
-    list[list] : A list of lists, where each sublist is a chunk of the original list.
-    """
-
-    return [
-        original_list[i : i + chunk_size]
-        for i in range(0, len(original_list), chunk_size)
-    ]
+from utils.utils import chunk_list
+from openpyxl import Workbook
+from openpyxl.worksheet.table import Table, TableStyleInfo
+from openpyxl.utils import get_column_letter
 
 
 def get_sample_deployments_data():
@@ -101,6 +78,37 @@ def get_sample_deployments_data():
     ]
 
 
+def parse_connectors_report_command_line_args():
+    """
+    Parses command-line arguments for connector report processing.
+
+    Arguments:
+    -a, --account_name: Optional; Boomi account nickname which will be appended to the .env filename,
+                            e.g -a younglife will look for env vars in younglife.env
+    -e, --environment: Optional; Name of the environment to filter connectors by.
+    Returns:
+    argparse.Namespace: Parsed arguments.
+    """
+    parser = argparse.ArgumentParser(description="Process connector information.")
+    parser.add_argument(
+        "-a",
+        "--account_name",
+        type=str,
+        default="",
+        help="Boomi account name for env file, e.g -a argano will look for argano.env",
+    )
+    parser.add_argument(
+        "-e",
+        "--environment",
+        type=str,
+        help="Name of the environment to filter connectors by.",
+    )
+
+    args = parser.parse_args()
+
+    return args
+
+
 class BoomiMetadataExtractor:
     """
     Extracts integration metadata from Boomi AtomSphere API
@@ -127,7 +135,7 @@ class BoomiMetadataExtractor:
 
     def query_deployed_packages(
         self, environment_name: str = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, any]]:
         """
         Query all deployed packages (processes) in the account
 
@@ -212,7 +220,7 @@ class BoomiMetadataExtractor:
             print(f"Error getting process name for {component_id}: {e}")
             return "Unknown"
 
-    def get_package_manifest(self, package_id: str) -> List[Dict[str, Any]]:
+    def get_package_manifest(self, package_id: str) -> list[dict[str, any]]:
         """
         Get the component manifest for a deployed package
 
@@ -240,8 +248,8 @@ class BoomiMetadataExtractor:
             return []
 
     def make_bulk_component_metadata_request(
-        self, chunked_component_ids: List[str]
-    ) -> List[Dict[str, Any]]:
+        self, chunked_component_ids: list[str]
+    ) -> list[dict[str, any]]:
         """
         Get metadata for multiple components in bulk
 
@@ -276,8 +284,8 @@ class BoomiMetadataExtractor:
             return []
 
     def get_component_metadata_bulk(
-        self, component_ids: List[str]
-    ) -> List[Dict[str, Any]]:
+        self, component_ids: list[str]
+    ) -> list[dict[str, any]]:
         """
         Get metadata for multiple components in bulk
 
@@ -301,8 +309,8 @@ class BoomiMetadataExtractor:
         return all_metadata
 
     def parse_component_metadata(
-        self, metadata: Dict[str, Any], process_name: str
-    ) -> List[Dict[str, Any]]:
+        self, metadata: dict[str, any], process_name: str
+    ) -> list[dict[str, any]]:
         """
         Parse component metadata to extract connector and operation information
 
@@ -346,7 +354,7 @@ class BoomiMetadataExtractor:
 
         return results
 
-    def export_to_csv(self, data: List[Dict[str, Any]], filename: str = None):
+    def export_to_csv(self, data: list[dict[str, any]], filename: str = None):
         """
         Export metadata to CSV file
 
@@ -356,7 +364,7 @@ class BoomiMetadataExtractor:
         """
         if not filename:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"boomi_metadata_{timestamp}.csv"
+            filename = f"boomi_connector_metadata_{timestamp}.csv"
 
         if not data:
             print("No data to export")
@@ -364,7 +372,16 @@ class BoomiMetadataExtractor:
 
         # Get all unique keys
         fieldnames = list(data[0].keys())
-
+        """
+        fieldnames = [
+            "process_name",
+            "component_name",
+            "component_subtype",
+            "component_current_version",
+            "component_version",
+            "component_id",
+        ]
+        """
         try:
             with open(filename, "w", newline="", encoding="utf-8") as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -375,6 +392,191 @@ class BoomiMetadataExtractor:
 
         except IOError as e:
             print(f"Error writing CSV file: {e}")
+
+    def export_to_excel1(self, data: list[dict[str, any]], filename: str = None):
+        """
+        Export metadata to Excel file with separate sheets for connector-action and connector-settings
+
+        Args:
+            data: List of metadata dictionaries
+            filename: Output filename (default: boomi_metadata_TIMESTAMP.xlsx)
+        """
+        if not filename:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"boomi_connector_metadata_{timestamp}.xlsx"
+
+        if not data:
+            print("No data to export")
+            return
+
+        # Split data by component_type
+        connector_actions = [
+            row for row in data if row.get("component_type") == "connector-action"
+        ]
+        connector_settings = [
+            row for row in data if row.get("component_type") == "connector-settings"
+        ]
+
+        # Define fieldnames
+        fieldnames = [
+            "process_name",
+            "component_name",
+            "component_subtype",
+            "component_current_version",
+            "component_version",
+            "component_id",
+        ]
+
+        try:
+            # Create workbook
+            wb = Workbook()
+
+            # Remove default sheet
+            wb.remove(wb.active)
+
+            # Create "Operations" sheet for connector-action data
+            ws_operations = wb.create_sheet("Operations")
+            if connector_actions:
+                ws_operations.append(fieldnames)
+                for row in connector_actions:
+                    ws_operations.append([row.get(field, "") for field in fieldnames])
+            else:
+                ws_operations.append(fieldnames)  # Write headers even if no data
+
+            # Create "Connections" sheet for connector-settings data
+            ws_connections = wb.create_sheet("Connections")
+            if connector_settings:
+                ws_connections.append(fieldnames)
+                for row in connector_settings:
+                    ws_connections.append([row.get(field, "") for field in fieldnames])
+            else:
+                ws_connections.append(fieldnames)  # Write headers even if no data
+
+            # Save workbook
+            wb.save(filename)
+
+            print(f"Data exported to {filename}")
+            print(f"  - Operations sheet: {len(connector_actions)} rows")
+            print(f"  - Connections sheet: {len(connector_settings)} rows")
+
+        except IOError as e:
+            print(f"Error writing Excel file: {e}")
+
+    def export_to_excel(self, data: list[dict[str, any]], filename: str = None):
+        """
+        Export metadata to Excel file with separate sheets for connector-action and connector-settings
+
+        Args:
+            data: List of metadata dictionaries
+            filename: Output filename (default: boomi_metadata_TIMESTAMP.xlsx)
+        """
+        if not filename:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"boomi_connector_metadata_{timestamp}.xlsx"
+
+        if not data:
+            print("No data to export")
+            return
+
+        # Split data by component_type
+        connector_actions = [
+            row for row in data if row.get("component_type") == "connector-action"
+        ]
+        connector_settings = [
+            row for row in data if row.get("component_type") == "connector-settings"
+        ]
+
+        # Define fieldnames
+        fieldnames = [
+            "process_name",
+            "component_name",
+            "component_subtype",
+            "component_current_version",
+            "component_version",
+            "component_id",
+        ]
+
+        def auto_size_columns(worksheet):
+            """Auto-size all columns based on content"""
+            for column in worksheet.columns:
+                max_length = 0
+                column_letter = get_column_letter(column[0].column)
+
+                for cell in column:
+                    try:
+                        if cell.value:
+                            max_length = max(max_length, len(str(cell.value)))
+                    except:
+                        pass
+
+                adjusted_width = min(max_length + 2, 50)  # Add padding, cap at 50
+                worksheet.column_dimensions[column_letter].width = adjusted_width
+
+        try:
+            # Create workbook
+            wb = Workbook()
+
+            # Remove default sheet
+            wb.remove(wb.active)
+
+            # Create "Operations" sheet for connector-action data
+            ws_operations = wb.create_sheet("Operations")
+            ws_operations.append(fieldnames)
+            for row in connector_actions:
+                ws_operations.append([row.get(field, "") for field in fieldnames])
+
+            # Format Operations sheet as table
+            if len(connector_actions) > 0:
+                table_ref = (
+                    f"A1:{chr(65 + len(fieldnames) - 1)}{len(connector_actions) + 1}"
+                )
+            else:
+                table_ref = f"A1:{chr(65 + len(fieldnames) - 1)}1"
+
+            operations_table = Table(displayName="OperationsTable", ref=table_ref)
+            style = TableStyleInfo(
+                name="TableStyleMedium9",
+                showFirstColumn=False,
+                showLastColumn=False,
+                showRowStripes=True,
+                showColumnStripes=False,
+            )
+            operations_table.tableStyleInfo = style
+            ws_operations.add_table(operations_table)
+
+            # Auto-size columns for Operations sheet
+            auto_size_columns(ws_operations)
+
+            # Create "Connections" sheet for connector-settings data
+            ws_connections = wb.create_sheet("Connections")
+            ws_connections.append(fieldnames)
+            for row in connector_settings:
+                ws_connections.append([row.get(field, "") for field in fieldnames])
+
+            # Format Connections sheet as table
+            if len(connector_settings) > 0:
+                table_ref = (
+                    f"A1:{chr(65 + len(fieldnames) - 1)}{len(connector_settings) + 1}"
+                )
+            else:
+                table_ref = f"A1:{chr(65 + len(fieldnames) - 1)}1"
+
+            connections_table = Table(displayName="ConnectionsTable", ref=table_ref)
+            connections_table.tableStyleInfo = style
+            ws_connections.add_table(connections_table)
+
+            # Auto-size columns for Connections sheet
+            auto_size_columns(ws_connections)
+
+            # Save workbook
+            wb.save(filename)
+
+            print(f"Data exported to {filename}")
+            print(f"  - Operations sheet: {len(connector_actions)} rows")
+            print(f"  - Connections sheet: {len(connector_settings)} rows")
+
+        except IOError as e:
+            print(f"Error writing Excel file: {e}")
 
     def run_extraction(
         self,
@@ -399,7 +601,8 @@ class BoomiMetadataExtractor:
         # Step 1: Query all deployed packages
         print("\nStep 1: Querying deployed packages...")
         deployed_packages = self.query_deployed_packages(environment_name)
-        # REMOVEME
+
+        # REMOVE
         deployed_packages = get_sample_deployments_data()
 
         if not deployed_packages:
@@ -474,52 +677,9 @@ class BoomiMetadataExtractor:
 
         if export_csv and all_metadata:
             print("\nExporting to CSV...")
-            self.export_to_csv(all_metadata, csv_filename)
-
+            # self.export_to_csv(all_metadata, csv_filename)
+            self.export_to_excel(
+                all_metadata,
+                csv_filename.replace(".csv", ".xlsx") if csv_filename else None,
+            )
         return all_metadata
-
-
-# Example usage
-if __name__ == "__main__":
-    # Configuration
-    ACCOUNT_ID = "personal-K8JJK1"  # e.g., youraccount-12345
-    USERNAME = "andy.strubhar@argano.com"
-    PASSWORD = ""
-
-    # Optional: Specify environment name to filter
-    # Set to None to get all environments
-    ENVIRONMENT_NAME = "AWS Molecule Prod"  # Or None for all environments
-
-    # Create extractor instance
-    extractor = BoomiMetadataExtractor(
-        account_id=ACCOUNT_ID, username=USERNAME, password=PASSWORD
-    )
-
-    # Run extraction
-    metadata = extractor.run_extraction(
-        environment_name=ENVIRONMENT_NAME,
-        export_csv=True,
-        csv_filename="boomi_integration_inventory.csv",
-    )
-
-    # Optional: Print summary statistics
-    if metadata:
-        print("\n" + "=" * 60)
-        print("SUMMARY STATISTICS")
-        print("=" * 60)
-
-        # Count unique connector types
-        connector_types = {}
-        for item in metadata:
-            conn_type = item.get("component_subtype", "Unknown")
-            connector_types[conn_type] = connector_types.get(conn_type, 0) + 1
-
-        print("\nConnector Types Found:")
-        for conn_type, count in sorted(
-            connector_types.items(), key=lambda x: x[1], reverse=True
-        ):
-            print(f"  {conn_type}: {count}")
-
-        # Count unique processes
-        unique_processes = set(item.get("process_name") for item in metadata)
-        print(f"\nTotal Unique Processes: {len(unique_processes)}")

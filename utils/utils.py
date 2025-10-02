@@ -211,3 +211,27 @@ def generate_simple_component_type(component: dict) -> str:
     # Get the component type from the dictionary and return its simple representation
 
     return component_type_map.get(component["type"], "Other")
+
+
+def chunk_list(original_list: list, chunk_size: int) -> list[list]:
+    """
+    The 'chunk_list' function takes a list and a chunk size as input, and returns a list of sublists
+    where each sublist contains elements from the original list based on the specified chunk size.
+
+    Parameters
+    ----------
+    original_list : list
+        A list of elements that you want to chunk into smaller lists.
+    chunk_size : int
+        The 'chunk_size' parameter specifies the number of elements you want in each chunk when splitting
+    the original list into smaller chunks.
+
+    Returns
+    -------
+    list[list] : A list of lists, where each sublist is a chunk of the original list.
+    """
+
+    return [
+        original_list[i : i + chunk_size]
+        for i in range(0, len(original_list), chunk_size)
+    ]
